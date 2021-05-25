@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-solhint");
-require('hardhat-abi-exporter');
+require("hardhat-abi-exporter");
+require("hardhat-docgen");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -14,9 +15,14 @@ module.exports = {
     },
   },
   abiExporter: {
-    path: './build/abi',
+    path: "./build/abi",
     clear: true,
     flat: true,
-    spacing: 2
-  }
+    spacing: 2,
+  },
+  docgen: {
+    path: "./docs",
+    clear: true,
+    runOnCompile: true,
+  },
 };
