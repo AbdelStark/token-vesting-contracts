@@ -1,0 +1,7 @@
+node_modules
+build
+contracts/artifacts
+*.env
+.idea
+artifacts
+cache

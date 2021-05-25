@@ -1,0 +1,48 @@
+{
+  "name": "token-vesting-contracts",
+  "version": "0.0.1",
+  "description": "ERC20 Token Vesting Smart Contracts",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "npx prettier --write .",
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "flatten": "npx hardhat flatten"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdelhamidbakhta/token-vesting-contracts.git"
+  },
+  "keywords": [
+    "ERC20",
+    "Ethereum",
+    "Solidity",
+    "Smart+Contracts",
+    "Blockchain"
+  ],
+  "author": "Abdelhamid Bakhta",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/abdelhamidbakhta/token-vesting-contracts/issues"
+  },
+  "homepage": "https://github.com/abdelhamidbakhta/token-vesting-contracts#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.1.0",
+    "prettier": "^2.3.0",
+    "solc": "npm:solc@^0.8.4",
+    "solidity-coverage": "^0.7.16",
+    "solidity-docgen": "^0.5.13",
+    "truffle": "^5.3.7",
+    "truffle-assertions": "^0.9.2",
+    "truffle-flattener": "^1.5.0",
+    "web3": "^1.3.6"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.3.0",
+    "ethers": "^5.2.0",
+    "hardhat": "^2.3.0"
+  }
+}
