@@ -25,6 +25,7 @@ describe("TokenVesting", function () {
       expect(await testToken.totalSupply()).to.equal(ownerBalance);
     });
     it("Should vest tokens gradually", async function () {
+      // deploy vesting contract
       const tokenVesting = await TokenVesting.deploy(
         addr1.address,
         0,
@@ -34,12 +35,20 @@ describe("TokenVesting", function () {
         testToken.address
       );
       await tokenVesting.deployed();
+      // check storage fields after deployment
       expect((await tokenVesting.getBeneficiary()).toString()).to.equal(
         addr1.address
       );
       expect((await tokenVesting.getToken()).toString()).to.equal(
         testToken.address
       );
+
+      // send tokens to vesting contract
+      await expect(testToken.transfer(tokenVesting.address, 100))
+        .to.emit(testToken, "Transfer")
+        .withArgs(owner.address, tokenVesting.address, 100);
+      const vestingBalance = await testToken.balanceOf(tokenVesting.address);
+      expect(vestingBalance).to.equal(100);
     });
   });
 });

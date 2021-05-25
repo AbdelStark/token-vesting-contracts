@@ -7,7 +7,8 @@
     "prettier": "npx prettier --write .",
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "flatten": "npx hardhat flatten"
+    "flatten": "npx hardhat flatten",
+    "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli"
   },
   "repository": {
     "type": "git",
