@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-solhint");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig

@@ -16,11 +16,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  */
 contract TokenVesting is Ownable, ReentrancyGuard{
     using SafeMath for uint256;
-
     uint256 public constant ZERO = 0;
-
-    event Released(uint256 amount);
-    event Revoked();
 
     // beneficiary of tokens after they are released
     address public beneficiary;
@@ -36,6 +32,17 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     uint256 public released;
     // address of the ERC20 token
     IERC20 public token;
+
+    event Released(uint256 amount);
+    event Revoked();
+
+    /**
+    * @notice Only allow calls from the beneficiary of the vesting contract
+    */
+    modifier onlyBeneficiary() {
+        require(msg.sender == beneficiary);
+        _;
+    }
 
     /**
      * @dev Creates a vesting contract that vests its balance of any ERC20 token to the
@@ -53,7 +60,8 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         uint256 _cliff,
         uint256 _duration,
         bool _revocable,
-        address _token) {
+        address _token
+    ) {
         require(_beneficiary != address(0x0));
         require(_cliff <= _duration);
 
@@ -65,13 +73,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         token = IERC20(_token);
     }
 
-    /**
-    * @notice Only allow calls from the beneficiary of the vesting contract
-    */
-    modifier onlyBeneficiary() {
-        require(msg.sender == beneficiary);
-        _;
-    }
     /**
      * @notice Transfers vested tokens to beneficiary.
      */
@@ -124,6 +125,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         }
     }
 
+
     function getBeneficiary() public view returns(address){
         return beneficiary;
     }
@@ -136,11 +138,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         return released;
     }
 
-    receive() external payable {
+    receive() external payable {}
 
-    }
-
-    fallback() external payable {
-
-    }
+    fallback() external payable {}
 }
