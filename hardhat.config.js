@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-solhint");
+require('hardhat-abi-exporter');
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -12,4 +13,10 @@ module.exports = {
       accounts: [`${process.env.GOERLI_PRIVATE_KEY}`],
     },
   },
+  abiExporter: {
+    path: './build/abi',
+    clear: true,
+    flat: true,
+    spacing: 2
+  }
 };
