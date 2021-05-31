@@ -28,4 +28,5 @@ jobs:
           architecture: ${{ matrix.architecture }}
       - name: Install dependencies
         run: yarn --frozen-lockfile
-      - run: yarn compile
+      - name: Compile smart contracts
+        run: yarn compile
