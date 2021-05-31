@@ -104,7 +104,9 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     function revoke() onlyOwner public {
         require(revocable, "TokenVesting: vesting is not revocable");
         uint256 balance = token.balanceOf(address(this));
-        token.transfer(owner(), balance);
+        uint256 vested = vestedAmount();
+        uint256 revokedAmount = balance.sub(vested);
+        token.transfer(owner(), revokedAmount);
         emit Revoked();
     }
 
