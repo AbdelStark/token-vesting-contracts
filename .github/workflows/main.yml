@@ -29,4 +29,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Compile smart contracts
+        env:
+          GOERLI_ENDPOINT: ${{ secrets.GOERLI_ENDPOINT }}
+          GOERLI_PRIVATE_KEY: ${{ secrets.GOERLI_PRIVATE_KEY }}
         run: yarn compile
