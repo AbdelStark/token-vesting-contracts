@@ -9,10 +9,7 @@ require("hardhat-docgen");
 module.exports = {
   solidity: "0.8.4",
   networks: {
-    goerli: {
-      url: `${process.env.GOERLI_ENDPOINT}`,
-      accounts: [`${process.env.GOERLI_PRIVATE_KEY}`],
-    },
+    goerli: goerliNetworkConfig(),
   },
   abiExporter: {
     path: "./build/abi",
@@ -26,3 +23,20 @@ module.exports = {
     runOnCompile: true,
   },
 };
+
+function goerliNetworkConfig() {
+  let url = "https://goerli.infura.io/v3/";
+  let accountPrivateKey = "0x";
+  if (process.env.GOERLI_ENDPOINT) {
+    url = `${process.env.GOERLI_ENDPOINT}`;
+  }
+
+  if (process.env.GOERLI_PRIVATE_KEY) {
+    accountPrivateKey = `${process.env.GOERLI_PRIVATE_KEY}`;
+  }
+
+  return {
+    url: url,
+    accounts: [accountPrivateKey],
+  };
+}
