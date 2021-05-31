@@ -13,6 +13,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  * @dev A token holder contract that can release its token balance gradually like a
  * typical vesting scheme, with a cliff and vesting period. Optionally revocable by the
  * owner.
+ * Adapted from: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v1.12.0/contracts/token/ERC20/TokenVesting.sol contract by OpenZeppelin
  */
 contract TokenVesting is Ownable, ReentrancyGuard{
     using SafeMath for uint256;
