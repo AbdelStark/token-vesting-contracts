@@ -26,29 +26,25 @@ describe("TokenVesting", function () {
     });
     it("Should vest tokens gradually", async function () {
       // deploy vesting contract
-      const tokenVesting = await TokenVesting.deploy(
-        testToken.address
-      );
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
       await tokenVesting.deployed();
       expect((await tokenVesting.token()).toString()).to.equal(
         testToken.address
       );
-      expect((await tokenVesting.getVestingSchedulesCount())).to.equal(
-          0
-      );
-      expect((await tokenVesting.withdrawableAmount())).to.equal(
-          0
-      );
+      expect(await tokenVesting.getVestingSchedulesCount()).to.equal(0);
+      expect(await tokenVesting.withdrawableAmount()).to.equal(0);
       // send tokens to vesting contract
       await expect(testToken.transfer(tokenVesting.address, 100))
         .to.emit(testToken, "Transfer")
         .withArgs(owner.address, tokenVesting.address, 100);
-      const vestingContractBalance = await testToken.balanceOf(tokenVesting.address);
-      expect(vestingContractBalance).to.equal(100);
-      expect((await tokenVesting.withdrawableAmount())).to.equal(
-          100
+      const vestingContractBalance = await testToken.balanceOf(
+        tokenVesting.address
       );
-
+      expect(vestingContractBalance).to.equal(100);
+      expect(await tokenVesting.withdrawableAmount()).to.equal(100);
+      await expect(tokenVesting.getVestingIdAtIndex(1)).to.be.revertedWith(
+        "TokenVesting: index out of bounds"
+      );
     });
   });
 });

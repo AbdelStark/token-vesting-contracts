@@ -93,6 +93,14 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         return vestingSchedulesIds.length;
     }
 
+    function getVestingIdAtIndex(uint256 index)
+        public
+        view
+        returns(bytes32){
+        require(index < getVestingSchedulesCount(), "TokenVesting: index out of bounds");
+        return vestingSchedulesIds[index];
+    }
+
     function vestedAmount(bytes32 vestingScheduleId)
         public
         onlyIfVestingScheduleNotRevoked(vestingScheduleId)
