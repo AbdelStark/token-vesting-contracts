@@ -24,6 +24,9 @@ module.exports = {
     clear: true,
     runOnCompile: true,
   },
+  gasReporter: {
+    currency: 'USD',
+  }
 };
 
 function goerliNetworkConfig() {
