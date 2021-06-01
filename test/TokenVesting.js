@@ -90,6 +90,21 @@ describe("TokenVesting", function () {
       ).to.be.revertedWith(
         "TokenVesting: cannot release tokens, not enough vested tokens"
       );
+
+      await expect(
+        tokenVesting.connect(beneficiary).release(vestingScheduleId, 10)
+      )
+        .to.emit(testToken, "Transfer")
+        .withArgs(tokenVesting.address, beneficiary.address, 10);
+      expect(
+        await tokenVesting
+          .connect(beneficiary)
+          .computeVestedAmount(vestingScheduleId)
+      ).to.be.equal(40);
+      let vestingSchedule = await tokenVesting.getVestingSchedule(
+        vestingScheduleId
+      );
+      expect(vestingSchedule.released).to.be.equal(10);
     });
 
     it("Should compute vesting schedule index", async function () {
