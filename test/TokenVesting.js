@@ -49,7 +49,7 @@ describe("TokenVesting", function () {
 
       const baseTime = 1622551248;
 
-      const beneficiary = addr1.address;
+      const beneficiary = addr1;
       const startTime = baseTime;
       const cliff = 0;
       const duration = 1000;
@@ -57,7 +57,7 @@ describe("TokenVesting", function () {
       const revokable = false;
       const amount = 100;
       await tokenVesting.createVestingSchedule(
-        beneficiary,
+        beneficiary.address,
         startTime,
         cliff,
         duration,
@@ -65,9 +65,31 @@ describe("TokenVesting", function () {
         revokable,
         amount
       );
-      const vestingSchedule =
-        await tokenVesting.getVestingScheduleByAddressAndIndex(beneficiary, 0);
-      console.log(vestingSchedule);
+      const vestingScheduleId =
+        await tokenVesting.computeVestingScheduleIdForAddressAndIndex(
+          beneficiary.address,
+          0
+        );
+      expect(
+        await tokenVesting.computeVestedAmount(vestingScheduleId)
+      ).to.be.equal(0);
+      const halfTime = baseTime + duration / 2;
+      await tokenVesting.setCurrentTime(halfTime);
+      expect(
+        await tokenVesting
+          .connect(beneficiary)
+          .computeVestedAmount(vestingScheduleId)
+      ).to.be.equal(50);
+      await expect(
+        tokenVesting.connect(addr2).release(vestingScheduleId, 100)
+      ).to.be.revertedWith(
+        "TokenVesting: only beneficiary can release vested tokens"
+      );
+      await expect(
+        tokenVesting.connect(beneficiary).release(vestingScheduleId, 100)
+      ).to.be.revertedWith(
+        "TokenVesting: cannot release tokens, not enough vested tokens"
+      );
     });
 
     it("Should compute vesting schedule index", async function () {

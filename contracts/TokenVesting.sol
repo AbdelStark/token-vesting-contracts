@@ -104,10 +104,11 @@ contract TokenVesting is Ownable, ReentrancyGuard{
             "TokenVesting: cannot create vesting schedule because not sufficient tokens"
         );
         bytes32 vestingScheduleId = computeNextVestingScheduleIdForHolder(_beneficiary);
+        uint256 cliff = _start.add(_cliff);
         vestingSchedules[vestingScheduleId] = VestingSchedule(
             true,
             _beneficiary,
-            _cliff,
+            cliff,
             _start,
             _duration,
             _slicePeriodSeconds,
@@ -199,6 +200,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         returns(uint256){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         return _computeVestedAmount(vestingSchedule);
+        return 0;
     }
 
     /**
@@ -275,7 +277,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     view
     returns(uint256){
         uint256 currentTime = getCurrentTime();
-        if (currentTime < vestingSchedule.cliff || vestingSchedule.revoked) {
+        if ((currentTime < vestingSchedule.cliff) || vestingSchedule.revoked == true) {
             return 0;
         } else if (currentTime >= vestingSchedule.start.add(vestingSchedule.duration)) {
             return vestingSchedule.amountTotal;
