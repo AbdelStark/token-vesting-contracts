@@ -46,5 +46,26 @@ describe("TokenVesting", function () {
         "TokenVesting: index out of bounds"
       );
     });
+    it("Should compute vesting schedule index", async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      const expectedVestingScheduleId =
+        "0xa279197a1d7a4b7398aa0248e95b8fcc6cdfb43220ade05d01add9c5468ea097";
+      expect(
+        (
+          await tokenVesting.computeVestingScheduleIdForAddressAndIndex(
+            addr1.address,
+            0
+          )
+        ).toString()
+      ).to.equal(expectedVestingScheduleId);
+      expect(
+        (
+          await tokenVesting.computeNextVestingScheduleIdForHolder(
+            addr1.address
+          )
+        ).toString()
+      ).to.equal(expectedVestingScheduleId);
+    });
   });
 });

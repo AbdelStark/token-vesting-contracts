@@ -34,7 +34,7 @@ contract LinearTokenVesting is Ownable, ReentrancyGuard{
     // amount of tokens released
     uint256 public released;
     // address of the ERC20 token
-    IERC20 public token;
+    IERC20 immutable public token;
 
     event Released(uint256 amount);
     event Revoked();
@@ -70,7 +70,7 @@ contract LinearTokenVesting is Ownable, ReentrancyGuard{
 
         beneficiary = _beneficiary;
         start = _start;
-        cliff = _start + _cliff;
+        cliff = _start.add(_cliff);
         duration = _duration;
         revocable = _revocable;
         token = IERC20(_token);
