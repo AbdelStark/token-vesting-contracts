@@ -11,11 +11,11 @@ describe("TokenVesting", function () {
 
   before(async function () {
     Token = await ethers.getContractFactory("Token");
-    TokenVesting = await ethers.getContractFactory("TokenVesting");
+    TokenVesting = await ethers.getContractFactory("MockTokenVesting");
   });
   beforeEach(async function () {
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
-    testToken = await Token.deploy("Test Token", "TT", 1000);
+    testToken = await Token.deploy("Test Token", "TT", 1000000);
     await testToken.deployed();
   });
 
@@ -24,6 +24,7 @@ describe("TokenVesting", function () {
       const ownerBalance = await testToken.balanceOf(owner.address);
       expect(await testToken.totalSupply()).to.equal(ownerBalance);
     });
+
     it("Should vest tokens gradually", async function () {
       // deploy vesting contract
       const tokenVesting = await TokenVesting.deploy(testToken.address);
@@ -34,18 +35,41 @@ describe("TokenVesting", function () {
       expect(await tokenVesting.getVestingSchedulesCount()).to.equal(0);
       expect(await tokenVesting.withdrawableAmount()).to.equal(0);
       // send tokens to vesting contract
-      await expect(testToken.transfer(tokenVesting.address, 100))
+      await expect(testToken.transfer(tokenVesting.address, 1000))
         .to.emit(testToken, "Transfer")
-        .withArgs(owner.address, tokenVesting.address, 100);
+        .withArgs(owner.address, tokenVesting.address, 1000);
       const vestingContractBalance = await testToken.balanceOf(
         tokenVesting.address
       );
-      expect(vestingContractBalance).to.equal(100);
-      expect(await tokenVesting.withdrawableAmount()).to.equal(100);
+      expect(vestingContractBalance).to.equal(1000);
+      expect(await tokenVesting.withdrawableAmount()).to.equal(1000);
       await expect(tokenVesting.getVestingIdAtIndex(1)).to.be.revertedWith(
         "TokenVesting: index out of bounds"
       );
+
+      const baseTime = 1622551248;
+
+      const beneficiary = addr1.address;
+      const startTime = baseTime;
+      const cliff = 0;
+      const duration = 1000;
+      const slicePeriodSeconds = 1;
+      const revokable = false;
+      const amount = 100;
+      await tokenVesting.createVestingSchedule(
+        beneficiary,
+        startTime,
+        cliff,
+        duration,
+        slicePeriodSeconds,
+        revokable,
+        amount
+      );
+      const vestingSchedule =
+        await tokenVesting.getVestingScheduleByAddressAndIndex(beneficiary, 0);
+      console.log(vestingSchedule);
     });
+
     it("Should compute vesting schedule index", async function () {
       const tokenVesting = await TokenVesting.deploy(testToken.address);
       await tokenVesting.deployed();

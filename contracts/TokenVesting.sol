@@ -213,6 +213,18 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     }
 
     /**
+    * @notice Returns the vesting schedule information for a given holder and index.
+    * @return the vesting schedule structure information
+    */
+    function getVestingScheduleByAddressAndIndex(address holder, uint256 index)
+    public
+    view
+    returns(VestingSchedule memory){
+        return getVestingSchedule(computeVestingScheduleIdForAddressAndIndex(holder, index));
+    }
+
+
+    /**
     * @dev Returns the amount of tokens that can be withdrawn by the owner.
     * @return the amount of tokens
     */
@@ -262,12 +274,13 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     internal
     view
     returns(uint256){
-        if (block.timestamp < vestingSchedule.cliff || vestingSchedule.revoked) {
+        uint256 currentTime = getCurrentTime();
+        if (currentTime < vestingSchedule.cliff || vestingSchedule.revoked) {
             return 0;
-        } else if (block.timestamp >= vestingSchedule.start.add(vestingSchedule.duration)) {
+        } else if (currentTime >= vestingSchedule.start.add(vestingSchedule.duration)) {
             return vestingSchedule.amountTotal;
         } else {
-            uint256 timeFromStart = block.timestamp.sub(vestingSchedule.start);
+            uint256 timeFromStart = currentTime.sub(vestingSchedule.start);
             uint secondsPerSlice = vestingSchedule.slicePeriodSeconds;
             uint256 vestedSlicePeriods = timeFromStart.div(secondsPerSlice);
             uint256 vestedSeconds = vestedSlicePeriods.mul(secondsPerSlice);
@@ -275,6 +288,14 @@ contract TokenVesting is Ownable, ReentrancyGuard{
             vestedAmount = vestedAmount.sub(vestingSchedule.released);
             return vestedAmount;
         }
+    }
+
+    function getCurrentTime()
+        internal
+        virtual
+        view
+        returns(uint256){
+        return block.timestamp;
     }
 
 }
