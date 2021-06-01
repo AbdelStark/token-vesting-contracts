@@ -200,7 +200,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         returns(uint256){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         return _computeVestedAmount(vestingSchedule);
-        return 0;
     }
 
     /**
@@ -280,7 +279,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         if ((currentTime < vestingSchedule.cliff) || vestingSchedule.revoked == true) {
             return 0;
         } else if (currentTime >= vestingSchedule.start.add(vestingSchedule.duration)) {
-            return vestingSchedule.amountTotal;
+            return vestingSchedule.amountTotal.sub(vestingSchedule.released);
         } else {
             uint256 timeFromStart = currentTime.sub(vestingSchedule.start);
             uint secondsPerSlice = vestingSchedule.slicePeriodSeconds;
