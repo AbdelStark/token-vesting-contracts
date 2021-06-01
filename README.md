@@ -11,8 +11,6 @@ On-Chain vesting scheme enabled by smart contracts.
 `TokenVesting` contract can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period.
 Optionally revocable by the owner.
 
-Adapted from: [TokenVesting.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v1.12.0/contracts/token/ERC20/TokenVesting.sol) by [OpenZeppelin](https://openzeppelin.com/)
-
 ### 📦 Installation
 
 ```console
