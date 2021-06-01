@@ -2,6 +2,7 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-solhint");
 require("hardhat-abi-exporter");
 require("hardhat-docgen");
+require("hardhat-tracer");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig

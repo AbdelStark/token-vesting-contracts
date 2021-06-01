@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prettier": "npx prettier --write .",
-    "test": "npx hardhat test",
+    "test": "npx hardhat test --logs",
     "compile": "npx hardhat compile",
     "flatten": "npx hardhat flatten",
     "check:format": "solhint contracts/*.sol --fix",
@@ -48,6 +48,7 @@
     "ethers": "^5.2.0",
     "hardhat": "^2.3.0",
     "hardhat-abi-exporter": "^2.2.1",
-    "hardhat-docgen": "^1.1.1"
+    "hardhat-docgen": "^1.1.1",
+    "hardhat-tracer": "^1.0.0-alpha.6"
   }
 }
