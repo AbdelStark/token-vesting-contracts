@@ -129,7 +129,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         onlyIfVestingScheduleNotRevoked(vestingScheduleId){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         vestingSchedule.revoked = true;
-        vestingSchedulesTotalAmount.sub(vestingSchedule.amountTotal);
+        vestingSchedulesTotalAmount = vestingSchedulesTotalAmount.sub(vestingSchedule.amountTotal);
     }
 
     /**
