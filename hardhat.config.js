@@ -4,6 +4,7 @@ require("hardhat-abi-exporter");
 require("hardhat-docgen");
 require("hardhat-tracer");
 require("hardhat-gas-reporter");
+require("solidity-coverage");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -25,8 +26,8 @@ module.exports = {
     runOnCompile: true,
   },
   gasReporter: {
-    currency: 'USD',
-  }
+    currency: "USD",
+  },
 };
 
 function goerliNetworkConfig() {

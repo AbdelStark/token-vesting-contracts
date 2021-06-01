@@ -14421,7 +14421,7 @@ solhint@^2.0.0:
 
 solidity-coverage@^0.7.16:
   version "0.7.16"
-  resolved "https://registry.npmjs.org/solidity-coverage/-/solidity-coverage-0.7.16.tgz"
+  resolved "https://registry.yarnpkg.com/solidity-coverage/-/solidity-coverage-0.7.16.tgz#c8c8c46baa361e2817bbf275116ddd2ec90a55fb"
   integrity sha512-ttBOStywE6ZOTJmmABSg4b8pwwZfYKG8zxu40Nz+sRF5bQX7JULXWj/XbX0KXps3Fsp8CJXg8P29rH3W54ipxw==
   dependencies:
     "@solidity-parser/parser" "^0.12.0"
