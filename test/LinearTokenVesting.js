@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-describe("TokenVesting", function () {
+describe("LinearTokenVesting", function () {
   let Token;
   let testToken;
   let TokenVesting;
@@ -11,7 +11,7 @@ describe("TokenVesting", function () {
 
   before(async function () {
     Token = await ethers.getContractFactory("Token");
-    TokenVesting = await ethers.getContractFactory("TokenVesting");
+    TokenVesting = await ethers.getContractFactory("LinearTokenVesting");
   });
   beforeEach(async function () {
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
@@ -27,28 +27,28 @@ describe("TokenVesting", function () {
     it("Should vest tokens gradually", async function () {
       // deploy vesting contract
       const tokenVesting = await TokenVesting.deploy(
+        addr1.address,
+        0,
+        0,
+        0,
+        false,
         testToken.address
       );
       await tokenVesting.deployed();
-      expect((await tokenVesting.token()).toString()).to.equal(
+      // check storage fields after deployment
+      expect((await tokenVesting.getBeneficiary()).toString()).to.equal(
+        addr1.address
+      );
+      expect((await tokenVesting.getToken()).toString()).to.equal(
         testToken.address
       );
-      expect((await tokenVesting.getVestingSchedulesCount())).to.equal(
-          0
-      );
-      expect((await tokenVesting.withdrawableAmount())).to.equal(
-          0
-      );
+
       // send tokens to vesting contract
       await expect(testToken.transfer(tokenVesting.address, 100))
         .to.emit(testToken, "Transfer")
         .withArgs(owner.address, tokenVesting.address, 100);
-      const vestingContractBalance = await testToken.balanceOf(tokenVesting.address);
-      expect(vestingContractBalance).to.equal(100);
-      expect((await tokenVesting.withdrawableAmount())).to.equal(
-          100
-      );
-
+      const vestingBalance = await testToken.balanceOf(tokenVesting.address);
+      expect(vestingBalance).to.equal(100);
     });
   });
 });
