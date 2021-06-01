@@ -3,6 +3,7 @@ require("@nomiclabs/hardhat-solhint");
 require("hardhat-abi-exporter");
 require("hardhat-docgen");
 require("hardhat-tracer");
+require("hardhat-gas-reporter");
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
