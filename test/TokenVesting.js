@@ -48,7 +48,7 @@ describe("TokenVesting", function () {
       const cliff = 0;
       const duration = 1000;
       const slicePeriodSeconds = 1;
-      const revokable = false;
+      const revokable = true;
       const amount = 100;
 
       // create new vesting schedule
@@ -154,6 +154,12 @@ describe("TokenVesting", function () {
           .computeVestedAmount(vestingScheduleId)
       ).to.be.equal(0);
 
+      // check that anyone cannot revoke a vesting
+      await expect(
+        tokenVesting.connect(addr2).revoke(vestingScheduleId)
+      ).to.be.revertedWith(" Ownable: caller is not the owner");
+      await tokenVesting.revoke(vestingScheduleId);
+
       /*
        * TEST SUMMARY
        * deploy vesting contract
@@ -172,6 +178,7 @@ describe("TokenVesting", function () {
        * release all vested tokens (90)
        * check that the number of released tokens is 100
        * check that the vested amount is 0
+       * check that anyone cannot revoke a vesting
        */
     });
 

@@ -132,10 +132,11 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     */
     function revoke(bytes32 vestingScheduleId)
         public
+        onlyOwner
         onlyIfVestingScheduleNotRevoked(vestingScheduleId){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
+        require(vestingSchedule.revocable == true, "TokenVesting: vesting is not revocable");
         vestingSchedule.revoked = true;
-        vestingSchedulesTotalAmount = vestingSchedulesTotalAmount.sub(vestingSchedule.amountTotal);
     }
 
     /**
@@ -161,7 +162,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     )
         public
         nonReentrant
-        onlyIfVestingScheduleExists(vestingScheduleId){
+        onlyIfVestingScheduleNotRevoked(vestingScheduleId){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         require(msg.sender == vestingSchedule.beneficiary, "TokenVesting: only beneficiary can release vested tokens");
         uint256 vestedAmount = _computeVestedAmount(vestingSchedule);
@@ -241,6 +242,16 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         return getVestingSchedule(computeVestingScheduleIdForAddressAndIndex(holder, index));
     }
 
+    /**
+    * @notice Returns the total amount of vesting schedules.
+    * @return the total amount of vesting schedules
+    */
+    function getVestingSchedulesTotalAmount()
+    public
+    view
+    returns(uint256){
+        return vestingSchedulesTotalAmount;
+    }
 
     /**
     * @dev Returns the amount of tokens that can be withdrawn by the owner.
