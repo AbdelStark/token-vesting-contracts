@@ -189,5 +189,45 @@ describe("TokenVesting", function () {
         ).toString()
       ).to.equal(expectedVestingScheduleId);
     });
+
+    it("Should check input parameters for createVestingSchedule method", async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      await testToken.transfer(tokenVesting.address, 1000);
+      const time = Date.now();
+      await expect(
+        tokenVesting.createVestingSchedule(
+          addr1.address,
+          time,
+          0,
+          0,
+          1,
+          false,
+          1
+        )
+      ).to.be.revertedWith("TokenVesting: duration must be > 0");
+      await expect(
+        tokenVesting.createVestingSchedule(
+          addr1.address,
+          time,
+          0,
+          1,
+          0,
+          false,
+          1
+        )
+      ).to.be.revertedWith("TokenVesting: slicePeriodSeconds must be >= 1");
+      await expect(
+          tokenVesting.createVestingSchedule(
+              addr1.address,
+              time,
+              0,
+              1,
+              1,
+              false,
+              0
+          )
+      ).to.be.revertedWith("TokenVesting: amount must be > 0");
+    });
   });
 });
