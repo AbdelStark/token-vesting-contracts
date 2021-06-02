@@ -61,6 +61,13 @@ describe("TokenVesting", function () {
         revokable,
         amount
       );
+      expect(await tokenVesting.getVestingSchedulesCount()).to.be.equal(1);
+      expect(
+        await tokenVesting.getVestingSchedulesCountByBeneficiary(
+          beneficiary.address
+        )
+      ).to.be.equal(1);
+
       // compute vesting schedule id
       const vestingScheduleId =
         await tokenVesting.computeVestingScheduleIdForAddressAndIndex(
@@ -218,15 +225,15 @@ describe("TokenVesting", function () {
         )
       ).to.be.revertedWith("TokenVesting: slicePeriodSeconds must be >= 1");
       await expect(
-          tokenVesting.createVestingSchedule(
-              addr1.address,
-              time,
-              0,
-              1,
-              1,
-              false,
-              0
-          )
+        tokenVesting.createVestingSchedule(
+          addr1.address,
+          time,
+          0,
+          1,
+          1,
+          false,
+          0
+        )
       ).to.be.revertedWith("TokenVesting: amount must be > 0");
     });
   });

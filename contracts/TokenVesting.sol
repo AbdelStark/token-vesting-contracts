@@ -121,6 +121,9 @@ contract TokenVesting is Ownable, ReentrancyGuard{
             false
         );
         vestingSchedulesTotalAmount = vestingSchedulesTotalAmount.add(_amount);
+        vestingSchedulesIds.push(vestingScheduleId);
+        uint256 currentVestingCount = holdersVestingCount[_beneficiary];
+        holdersVestingCount[_beneficiary] = currentVestingCount.add(1);
     }
 
     /**
@@ -178,6 +181,17 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         view
         returns(uint256){
         return vestingSchedulesIds.length;
+    }
+
+    /**
+    * @dev Returns the number of vesting schedules associated to a beneficiary.
+    * @return the number of vesting schedules
+    */
+    function getVestingSchedulesCountByBeneficiary(address _beneficiary)
+    public
+    view
+    returns(uint256){
+        return holdersVestingCount[_beneficiary];
     }
 
     /**
