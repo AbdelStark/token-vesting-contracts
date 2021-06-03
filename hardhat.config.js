@@ -13,6 +13,7 @@ module.exports = {
   solidity: "0.8.4",
   networks: {
     goerli: goerliNetworkConfig(),
+    bscTestnet: bscTestnetNetworkConfig(),
   },
   abiExporter: {
     path: "./build/abi",
@@ -40,6 +41,24 @@ function goerliNetworkConfig() {
 
   if (process.env.GOERLI_PRIVATE_KEY) {
     accountPrivateKey = `${process.env.GOERLI_PRIVATE_KEY}`;
+  }
+
+  return {
+    url: url,
+    accounts: [accountPrivateKey],
+  };
+}
+
+function bscTestnetNetworkConfig() {
+  let url = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+  let accountPrivateKey =
+    "0x0000000000000000000000000000000000000000000000000000000000000000";
+  if (process.env.BSC_TESTNET_ENDPOINT) {
+    url = `${process.env.BSC_TESTNET_ENDPOINT}`;
+  }
+
+  if (process.env.BSC_TESTNET_PRIVATE_KEY) {
+    accountPrivateKey = `${process.env.BSC_TESTNET_PRIVATE_KEY}`;
   }
 
   return {
