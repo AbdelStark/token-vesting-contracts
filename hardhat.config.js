@@ -32,7 +32,8 @@ module.exports = {
 
 function goerliNetworkConfig() {
   let url = "https://goerli.infura.io/v3/";
-  let accountPrivateKey = "0x";
+  let accountPrivateKey =
+    "0x0000000000000000000000000000000000000000000000000000000000000000";
   if (process.env.GOERLI_ENDPOINT) {
     url = `${process.env.GOERLI_ENDPOINT}`;
   }

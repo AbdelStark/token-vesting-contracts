@@ -164,8 +164,10 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         nonReentrant
         onlyIfVestingScheduleNotRevoked(vestingScheduleId){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
+        bool isBeneficiary = msg.sender == vestingSchedule.beneficiary;
+        bool isOwner = msg.sender == owner();
         require(
-        (msg.sender == vestingSchedule.beneficiary) ||  (msg.sender == owner()),
+            isBeneficiary || isOwner,
             "TokenVesting: only beneficiary and owner can release vested tokens"
         );
         uint256 vestedAmount = _computeVestedAmount(vestingSchedule);

@@ -95,7 +95,7 @@ describe("TokenVesting", function () {
       await expect(
         tokenVesting.connect(addr2).release(vestingScheduleId, 100)
       ).to.be.revertedWith(
-        "TokenVesting: only beneficiary can release vested tokens"
+        "TokenVesting: only beneficiary and owner can release vested tokens"
       );
 
       // check that beneficiary cannot release more than the vested amount
@@ -135,15 +135,21 @@ describe("TokenVesting", function () {
           .computeVestedAmount(vestingScheduleId)
       ).to.be.equal(90);
 
-      // release all vested tokens (90)
+      // beneficiary release vested tokens (45)
       await expect(
-        tokenVesting.connect(beneficiary).release(vestingScheduleId, 90)
+        tokenVesting.connect(beneficiary).release(vestingScheduleId, 45)
       )
         .to.emit(testToken, "Transfer")
-        .withArgs(tokenVesting.address, beneficiary.address, 90);
+        .withArgs(tokenVesting.address, beneficiary.address, 45);
+
+      // owner release vested tokens (45)
+      await expect(tokenVesting.connect(owner).release(vestingScheduleId, 45))
+        .to.emit(testToken, "Transfer")
+        .withArgs(tokenVesting.address, beneficiary.address, 45);
       vestingSchedule = await tokenVesting.getVestingSchedule(
         vestingScheduleId
       );
+
       // check that the number of released tokens is 100
       expect(vestingSchedule.released).to.be.equal(100);
 
