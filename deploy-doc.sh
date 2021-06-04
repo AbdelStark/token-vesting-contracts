@@ -9,6 +9,7 @@ yarn compile
 # navigate into the build output directory
 cd docs
 
+git config --global init.defaultBranch main
 git init
 git add -A
 git commit -m 'deploy'
