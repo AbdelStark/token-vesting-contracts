@@ -13,6 +13,7 @@
     "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli",
     "deploy:bscTestnet": "npx hardhat run scripts/deploy.js --network bscTestnet"
   },
+  "files": ["build/abi"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abdelhamidbakhta/token-vesting-contracts.git"
