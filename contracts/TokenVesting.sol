@@ -134,9 +134,12 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         public
         onlyOwner
         onlyIfVestingScheduleNotRevoked(vestingScheduleId){
-        // TODO transfer vested tokens to beneficiary
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         require(vestingSchedule.revocable == true, "TokenVesting: vesting is not revocable");
+        uint256 vestedAmount = _computeVestedAmount(vestingSchedule);
+        if(vestedAmount > 0){
+            release(vestingScheduleId, vestedAmount);
+        }
         vestingSchedule.revoked = true;
     }
 
