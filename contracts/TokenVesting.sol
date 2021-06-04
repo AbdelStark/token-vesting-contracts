@@ -175,8 +175,8 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         require(vestedAmount >= amount, "TokenVesting: cannot release tokens, not enough vested tokens");
         vestingSchedule.released = vestingSchedule.released.add(amount);
         address payable beneficiaryPayable = payable(vestingSchedule.beneficiary);
-        _token.safeTransfer(beneficiaryPayable, amount);
         vestingSchedulesTotalAmount = vestingSchedulesTotalAmount.sub(amount);
+        _token.safeTransfer(beneficiaryPayable, amount);
     }
 
     /**
