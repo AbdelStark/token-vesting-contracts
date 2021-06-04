@@ -276,7 +276,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     /**
     * @dev Returns the address of the ERC20 token managed by the vesting contract.
     */
-    function token()
+    function getToken()
         public
         view
         returns(address){

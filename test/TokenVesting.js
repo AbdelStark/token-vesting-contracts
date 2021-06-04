@@ -29,7 +29,7 @@ describe("TokenVesting", function () {
       // deploy vesting contract
       const tokenVesting = await TokenVesting.deploy(testToken.address);
       await tokenVesting.deployed();
-      expect((await tokenVesting.token()).toString()).to.equal(
+      expect((await tokenVesting.getToken()).toString()).to.equal(
         testToken.address
       );
       // send tokens to vesting contract
@@ -192,7 +192,7 @@ describe("TokenVesting", function () {
       // deploy vesting contract
       const tokenVesting = await TokenVesting.deploy(testToken.address);
       await tokenVesting.deployed();
-      expect((await tokenVesting.token()).toString()).to.equal(
+      expect((await tokenVesting.getToken()).toString()).to.equal(
         testToken.address
       );
       // send tokens to vesting contract
