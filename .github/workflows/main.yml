@@ -32,3 +32,4 @@ jobs:
           GOERLI_ENDPOINT: ${{ secrets.GOERLI_ENDPOINT }}
           GOERLI_PRIVATE_KEY: ${{ secrets.GOERLI_PRIVATE_KEY }}
         run: yarn compile
+      -  run: yarn test
