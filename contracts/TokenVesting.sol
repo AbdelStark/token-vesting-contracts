@@ -265,7 +265,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     */
     function withdrawableAmount()
         public
-        onlyOwner
         view
         returns(uint256){
         return _token.balanceOf(address(this)).sub(vestingSchedulesTotalAmount);
