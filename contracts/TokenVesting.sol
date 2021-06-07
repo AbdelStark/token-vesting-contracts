@@ -136,7 +136,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         onlyIfVestingScheduleNotRevoked(vestingScheduleId){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
         require(vestingSchedule.revocable == true, "TokenVesting: vesting is not revocable");
-        uint256 vestedAmount = _computeVestedAmount(vestingSchedule);
+        uint256 vestedAmount = _computeReleasableAmount(vestingSchedule);
         if(vestedAmount > 0){
             release(vestingScheduleId, vestedAmount);
         }
@@ -174,7 +174,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
             isBeneficiary || isOwner,
             "TokenVesting: only beneficiary and owner can release vested tokens"
         );
-        uint256 vestedAmount = _computeVestedAmount(vestingSchedule);
+        uint256 vestedAmount = _computeReleasableAmount(vestingSchedule);
         require(vestedAmount >= amount, "TokenVesting: cannot release tokens, not enough vested tokens");
         vestingSchedule.released = vestingSchedule.released.add(amount);
         address payable beneficiaryPayable = payable(vestingSchedule.beneficiary);
@@ -220,13 +220,13 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @notice Computes the vested amount of tokens for the given vesting schedule identifier.
     * @return the vested amount
     */
-    function computeVestedAmount(bytes32 vestingScheduleId)
+    function computeReleasableAmount(bytes32 vestingScheduleId)
         public
         onlyIfVestingScheduleNotRevoked(vestingScheduleId)
         view
         returns(uint256){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
-        return _computeVestedAmount(vestingSchedule);
+        return _computeReleasableAmount(vestingSchedule);
     }
 
     /**
@@ -307,7 +307,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @dev Computes the vested amount of tokens for a vesting schedule.
     * @return the amount of vested tokens
     */
-    function _computeVestedAmount(VestingSchedule memory vestingSchedule)
+    function _computeReleasableAmount(VestingSchedule memory vestingSchedule)
     internal
     view
     returns(uint256){
