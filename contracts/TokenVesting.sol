@@ -304,8 +304,8 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     }
 
     /**
-    * @dev Computes the vested amount of tokens for a vesting schedule.
-    * @return the amount of vested tokens
+    * @dev Computes the releasable amount of tokens for a vesting schedule.
+    * @return the amount of releasable tokens
     */
     function _computeReleasableAmount(VestingSchedule memory vestingSchedule)
     internal
