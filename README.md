@@ -52,6 +52,10 @@ The report will be printed in the console and a static website containing full r
 $ yarn prettier
 ```
 
+### TODOS
+
+- Investigate Hardhat Ledger support https://www.npmjs.com/package/@ethersproject/hardware-wallets
+
 ## 📄 License
 
 **Token Vesting Contracts** is released under the [Apache-2.0](LICENSE).
