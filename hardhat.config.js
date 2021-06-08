@@ -15,12 +15,14 @@ module.exports = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200
-      }
-    }
+        runs: 200,
+      },
+    },
   },
   networks: {
+    mainnet: mainnetNetworkConfig(),
     goerli: goerliNetworkConfig(),
+    bscMainnet: bscMainnetNetworkConfig(),
     bscTestnet: bscTestnetNetworkConfig(),
   },
   abiExporter: {
@@ -39,6 +41,24 @@ module.exports = {
   },
 };
 
+function mainnetNetworkConfig() {
+  let url = "https://mainnet.infura.io/v3/";
+  let accountPrivateKey =
+    "0x0000000000000000000000000000000000000000000000000000000000000000";
+  if (process.env.MAINNET_ENDPOINT) {
+    url = `${process.env.MAINNET_ENDPOINT}`;
+  }
+
+  if (process.env.MAINNET_PRIVATE_KEY) {
+    accountPrivateKey = `${process.env.MAINNET_PRIVATE_KEY}`;
+  }
+
+  return {
+    url: url,
+    accounts: [accountPrivateKey],
+  };
+}
+
 function goerliNetworkConfig() {
   let url = "https://goerli.infura.io/v3/";
   let accountPrivateKey =
@@ -49,6 +69,24 @@ function goerliNetworkConfig() {
 
   if (process.env.GOERLI_PRIVATE_KEY) {
     accountPrivateKey = `${process.env.GOERLI_PRIVATE_KEY}`;
+  }
+
+  return {
+    url: url,
+    accounts: [accountPrivateKey],
+  };
+}
+
+function bscMainnetNetworkConfig() {
+  let url = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+  let accountPrivateKey =
+    "0x0000000000000000000000000000000000000000000000000000000000000000";
+  if (process.env.BSC_MAINNET_ENDPOINT) {
+    url = `${process.env.BSC_MAINNET_ENDPOINT}`;
+  }
+
+  if (process.env.BSC_MAINNET_PRIVATE_KEY) {
+    accountPrivateKey = `${process.env.BSC_MAINNET_PRIVATE_KEY}`;
   }
 
   return {

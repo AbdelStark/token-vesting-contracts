@@ -10,8 +10,10 @@
     "compile": "npx hardhat compile",
     "flatten": "npx hardhat flatten",
     "check:format": "solhint contracts/*.sol --fix",
+    "deploy:mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
     "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli",
-    "deploy:bscTestnet": "npx hardhat run scripts/deploy.js --network bscTestnet"
+    "deploy:bsc:mainnet": "npx hardhat run scripts/deploy.js --network bscMainnet",
+    "deploy:bsc:testnet": "npx hardhat run scripts/deploy.js --network bscTestnet"
   },
   "files": [
     "build/abi"
