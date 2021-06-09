@@ -140,6 +140,8 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         if(vestedAmount > 0){
             release(vestingScheduleId, vestedAmount);
         }
+        uint256 unreleased = vestingSchedule.amountTotal.sub(vestingSchedule.released);
+        vestingSchedulesTotalAmount = vestingSchedulesTotalAmount.sub(unreleased);
         vestingSchedule.revoked = true;
     }
 
