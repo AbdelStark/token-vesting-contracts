@@ -16,7 +16,7 @@ contract MockTokenVesting is TokenVesting{
     }
 
     function setCurrentTime(uint256 _time)
-        public{
+        external{
         mockTime = _time;
     }
 

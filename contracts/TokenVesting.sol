@@ -1,6 +1,6 @@
 // contracts/TokenVesting.sol
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity >=0.8.4;
+pragma solidity 0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -77,6 +77,62 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     receive() external payable {}
 
     fallback() external payable {}
+
+    /**
+    * @dev Returns the number of vesting schedules associated to a beneficiary.
+    * @return the number of vesting schedules
+    */
+    function getVestingSchedulesCountByBeneficiary(address _beneficiary)
+    external
+    view
+    returns(uint256){
+        return holdersVestingCount[_beneficiary];
+    }
+
+    /**
+    * @dev Returns the vesting schedule id at the given index.
+    * @return the vesting id
+    */
+    function getVestingIdAtIndex(uint256 index)
+    external
+    view
+    returns(bytes32){
+        require(index < getVestingSchedulesCount(), "TokenVesting: index out of bounds");
+        return vestingSchedulesIds[index];
+    }
+
+    /**
+    * @notice Returns the vesting schedule information for a given holder and index.
+    * @return the vesting schedule structure information
+    */
+    function getVestingScheduleByAddressAndIndex(address holder, uint256 index)
+    external
+    view
+    returns(VestingSchedule memory){
+        return getVestingSchedule(computeVestingScheduleIdForAddressAndIndex(holder, index));
+    }
+
+
+    /**
+    * @notice Returns the total amount of vesting schedules.
+    * @return the total amount of vesting schedules
+    */
+    function getVestingSchedulesTotalAmount()
+    external
+    view
+    returns(uint256){
+        return vestingSchedulesTotalAmount;
+    }
+
+    /**
+    * @dev Returns the address of the ERC20 token managed by the vesting contract.
+    */
+    function getToken()
+    external
+    view
+    returns(address){
+        return address(_token);
+    }
 
     /**
     * @notice Creates a new vesting schedule for a beneficiary.
@@ -196,29 +252,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     }
 
     /**
-    * @dev Returns the number of vesting schedules associated to a beneficiary.
-    * @return the number of vesting schedules
-    */
-    function getVestingSchedulesCountByBeneficiary(address _beneficiary)
-    public
-    view
-    returns(uint256){
-        return holdersVestingCount[_beneficiary];
-    }
-
-    /**
-    * @dev Returns the vesting schedule id at the given index.
-    * @return the vesting id
-    */
-    function getVestingIdAtIndex(uint256 index)
-        public
-        view
-        returns(bytes32){
-        require(index < getVestingSchedulesCount(), "TokenVesting: index out of bounds");
-        return vestingSchedulesIds[index];
-    }
-
-    /**
     * @notice Computes the vested amount of tokens for the given vesting schedule identifier.
     * @return the vested amount
     */
@@ -243,28 +276,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     }
 
     /**
-    * @notice Returns the vesting schedule information for a given holder and index.
-    * @return the vesting schedule structure information
-    */
-    function getVestingScheduleByAddressAndIndex(address holder, uint256 index)
-    public
-    view
-    returns(VestingSchedule memory){
-        return getVestingSchedule(computeVestingScheduleIdForAddressAndIndex(holder, index));
-    }
-
-    /**
-    * @notice Returns the total amount of vesting schedules.
-    * @return the total amount of vesting schedules
-    */
-    function getVestingSchedulesTotalAmount()
-    public
-    view
-    returns(uint256){
-        return vestingSchedulesTotalAmount;
-    }
-
-    /**
     * @dev Returns the amount of tokens that can be withdrawn by the owner.
     * @return the amount of tokens
     */
@@ -273,16 +284,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         view
         returns(uint256){
         return _token.balanceOf(address(this)).sub(vestingSchedulesTotalAmount);
-    }
-
-    /**
-    * @dev Returns the address of the ERC20 token managed by the vesting contract.
-    */
-    function getToken()
-        public
-        view
-        returns(address){
-        return address(_token);
     }
 
     /**
