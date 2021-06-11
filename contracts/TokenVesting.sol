@@ -156,13 +156,13 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         public
         onlyOwner{
         require(
-            withdrawableAmount() >= _amount,
+            this.withdrawableAmount() >= _amount,
             "TokenVesting: cannot create vesting schedule because not sufficient tokens"
         );
         require(_duration > 0, "TokenVesting: duration must be > 0");
         require(_amount > 0, "TokenVesting: amount must be > 0");
         require(_slicePeriodSeconds >= 1, "TokenVesting: slicePeriodSeconds must be >= 1");
-        bytes32 vestingScheduleId = computeNextVestingScheduleIdForHolder(_beneficiary);
+        bytes32 vestingScheduleId = this.computeNextVestingScheduleIdForHolder(_beneficiary);
         uint256 cliff = _start.add(_cliff);
         vestingSchedules[vestingScheduleId] = VestingSchedule(
             true,
@@ -209,7 +209,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         public
         nonReentrant
         onlyOwner{
-        require(withdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
+        require(this.withdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
         _token.safeTransfer(owner(), amount);
     }
 
