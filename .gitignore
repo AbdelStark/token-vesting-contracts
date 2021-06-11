@@ -7,3 +7,4 @@ artifacts
 cache
 data
 coverage*
+env
