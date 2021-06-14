@@ -53,6 +53,12 @@ The report will be printed in the console and a static website containing full r
 $ yarn prettier
 ```
 
+### 🐱‍💻 Verify & Publish contract source code
+
+```console
+$ npx hardhat  verify --network mainnet $CONTRACT_ADDRESS $CONSTRUCTOR_ARGUMENTS
+```
+
 ### TODOS
 
 - Investigate Hardhat Ledger support https://www.npmjs.com/package/@ethersproject/hardware-wallets

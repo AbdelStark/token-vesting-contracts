@@ -1,10 +1,13 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-solhint");
+require("@nomiclabs/hardhat-etherscan");
 require("hardhat-abi-exporter");
 require("hardhat-docgen");
 require("hardhat-tracer");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
+
+const etherscanApiKey = getEtherscanApiKey();
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -38,6 +41,9 @@ module.exports = {
   },
   gasReporter: {
     currency: "USD",
+  },
+  etherscan: {
+    apiKey: `${etherscanApiKey}`,
   },
 };
 
@@ -111,4 +117,12 @@ function bscTestnetNetworkConfig() {
     url: url,
     accounts: [accountPrivateKey],
   };
+}
+
+function getEtherscanApiKey() {
+  let apiKey = "";
+  if (process.env.ETHERSCAN_API_KEY) {
+    apiKey = `${process.env.ETHERSCAN_API_KEY}`;
+  }
+  return apiKey;
 }

@@ -156,7 +156,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         public
         onlyOwner{
         require(
-            this.withdrawableAmount() >= _amount,
+            this.getWithdrawableAmount() >= _amount,
             "TokenVesting: cannot create vesting schedule because not sufficient tokens"
         );
         require(_duration > 0, "TokenVesting: duration must be > 0");
@@ -209,7 +209,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         public
         nonReentrant
         onlyOwner{
-        require(this.withdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
+        require(this.getWithdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
         _token.safeTransfer(owner(), amount);
     }
 
@@ -279,7 +279,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @dev Returns the amount of tokens that can be withdrawn by the owner.
     * @return the amount of tokens
     */
-    function withdrawableAmount()
+    function getWithdrawableAmount()
         public
         view
         returns(uint256){
@@ -294,6 +294,16 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         view
         returns(bytes32){
         return computeVestingScheduleIdForAddressAndIndex(holder, holdersVestingCount[holder]);
+    }
+
+    /**
+    * @dev Returns the last vesting schedule for a given holder address.
+    */
+    function getLastVestingScheduleForHolder(address holder)
+        public
+        view
+        returns(VestingSchedule memory){
+        return vestingSchedules[computeVestingScheduleIdForAddressAndIndex(holder, holdersVestingCount[holder] - 1)];
     }
 
     /**

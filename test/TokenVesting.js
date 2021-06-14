@@ -40,7 +40,7 @@ describe("TokenVesting", function () {
         tokenVesting.address
       );
       expect(vestingContractBalance).to.equal(1000);
-      expect(await tokenVesting.withdrawableAmount()).to.equal(1000);
+      expect(await tokenVesting.getWithdrawableAmount()).to.equal(1000);
 
       const baseTime = 1622551248;
       const beneficiary = addr1;
