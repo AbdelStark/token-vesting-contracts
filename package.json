@@ -15,7 +15,7 @@
     "deploy:bsc:mainnet": "npx hardhat run scripts/deploy.js --network bscMainnet",
     "deploy:bsc:testnet": "npx hardhat run scripts/deploy.js --network bscTestnet",
     "tools:surya:graph": "surya graph ./contracts/**/*.sol | dot -Tpng > build/TokenVesting.png",
-    "tools:surya:report": "surya mdreport docs/surya-report.md contracts/TokenVesting.sol"
+    "tools:surya:report": "surya mdreport build/docs/surya-report.md contracts/TokenVesting.sol"
   },
   "files": [
     "build/abi"
