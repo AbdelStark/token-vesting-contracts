@@ -12,6 +12,10 @@ On-Chain vesting scheme enabled by smart contracts.
 `TokenVesting` contract can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period.
 Optionally revocable by the owner.
 
+## 🎭🧑‍💻 Security audits 
+
+- [Security audit](./audits/hackend_audit_report.pdf) from [Hacken](www.hacken.io)
+
 ### 📦 Installation
 
 ```console
