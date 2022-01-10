@@ -59,10 +59,6 @@ $ yarn prettier
 $ npx hardhat  verify --network mainnet $CONTRACT_ADDRESS $CONSTRUCTOR_ARGUMENTS
 ```
 
-### TODOS
-
-- Investigate Hardhat Ledger support https://www.npmjs.com/package/@ethersproject/hardware-wallets
-
 ## 📄 License
 
 **Token Vesting Contracts** is released under the [Apache-2.0](LICENSE).
