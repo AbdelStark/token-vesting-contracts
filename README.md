@@ -14,7 +14,7 @@ Optionally revocable by the owner.
 
 ## 🎭🧑‍💻 Security audits 
 
-- [Security audit](https://github.com/abdelhamidbakhta/token-vesting-contracts/blob/main/audits/hacken_audit_report.pdf) from [Hacken](www.hacken.io)
+- [Security audit](https://github.com/abdelhamidbakhta/token-vesting-contracts/blob/main/audits/hacken_audit_report.pdf) from [Hacken](https://hacken.io)
 
 ### 📦 Installation
 
