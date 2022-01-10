@@ -14,7 +14,7 @@ Optionally revocable by the owner.
 
 ## 🎭🧑‍💻 Security audits 
 
-- [Security audit](./audits/hackend_audit_report.pdf) from [Hacken](www.hacken.io)
+- [Security audit](audits/hackend_audit_report.pdf) from [Hacken](www.hacken.io)
 
 ### 📦 Installation
 
