@@ -11,7 +11,7 @@ describe("TokenVesting", function () {
 
   before(async function () {
     Token = await ethers.getContractFactory("Token");
-    TokenVesting = await ethers.getContractFactory("MockTokenVesting");
+    TokenVesting = await ethers.getContractFactory("TokenVesting");
   });
   beforeEach(async function () {
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
@@ -42,7 +42,9 @@ describe("TokenVesting", function () {
       expect(vestingContractBalance).to.equal(1000);
       expect(await tokenVesting.getWithdrawableAmount()).to.equal(1000);
 
-      const baseTime = 1622551248;
+      const latestBlock = await ethers.provider.getBlock("latest")
+
+      const baseTime = latestBlock.timestamp;
       const beneficiary = addr1;
       const startTime = baseTime;
       const cliff = 0;
@@ -82,7 +84,10 @@ describe("TokenVesting", function () {
 
       // set time to half the vesting period
       const halfTime = baseTime + duration / 2;
-      await tokenVesting.setCurrentTime(halfTime);
+      //await tokenVesting.setCurrentTime(halfTime);
+      await ethers.provider.send('evm_setNextBlockTimestamp', [halfTime]);
+      await ethers.provider.send('evm_mine');
+
 
       // check that vested amount is half the total amount to vest
       expect(
@@ -126,7 +131,9 @@ describe("TokenVesting", function () {
       expect(vestingSchedule.released).to.be.equal(10);
 
       // set current time after the end of the vesting period
-      await tokenVesting.setCurrentTime(baseTime + duration + 1);
+      await ethers.provider.send('evm_setNextBlockTimestamp', [baseTime + duration + 1]);
+      await ethers.provider.send('evm_mine');
+      //await tokenVesting.setCurrentTime(baseTime + duration + 1);
 
       // check that the vested amount is 90
       expect(
@@ -163,7 +170,7 @@ describe("TokenVesting", function () {
       // check that anyone cannot revoke a vesting
       await expect(
         tokenVesting.connect(addr2).revoke(vestingScheduleId)
-      ).to.be.revertedWith(" Ownable: caller is not the owner");
+      ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'");
       await tokenVesting.revoke(vestingScheduleId);
 
       /*
@@ -200,7 +207,8 @@ describe("TokenVesting", function () {
         .to.emit(testToken, "Transfer")
         .withArgs(owner.address, tokenVesting.address, 1000);
 
-      const baseTime = 1622551248;
+      const latestBlock = await ethers.provider.getBlock("latest")
+      const baseTime = latestBlock.timestamp;
       const beneficiary = addr1;
       const startTime = baseTime;
       const cliff = 0;
@@ -229,7 +237,8 @@ describe("TokenVesting", function () {
 
       // set time to half the vesting period
       const halfTime = baseTime + duration / 2;
-      await tokenVesting.setCurrentTime(halfTime);
+      await ethers.provider.send('evm_setNextBlockTimestamp', [halfTime]);
+      await ethers.provider.send('evm_mine');
 
       await expect(tokenVesting.revoke(vestingScheduleId))
         .to.emit(testToken, "Transfer")
