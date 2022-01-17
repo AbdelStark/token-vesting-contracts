@@ -18,7 +18,8 @@
     "tools:surya:report": "surya mdreport build/docs/surya-report.md contracts/TokenVesting.sol"
   },
   "files": [
-    "build/abi"
+    "build/abi",
+    "contracts"
   ],
   "repository": {
     "type": "git",
