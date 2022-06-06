@@ -43,17 +43,6 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     uint256 private vestingSchedulesTotalAmount;
     mapping(address => uint256) private holdersVestingCount;
 
-    event Released(uint256 amount);
-    event Revoked();
-
-    /**
-    * @dev Reverts if no vesting schedule matches the passed identifier.
-    */
-    modifier onlyIfVestingScheduleExists(bytes32 vestingScheduleId) {
-        require(vestingSchedules[vestingScheduleId].initialized);
-        _;
-    }
-
     /**
     * @dev Reverts if the vesting schedule does not exist or has been revoked.
     */
