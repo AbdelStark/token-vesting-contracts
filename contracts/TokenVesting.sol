@@ -153,7 +153,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         bool _revocable,
         uint256 _amount
     )
-        public
+        external
         onlyOwner{
         require(
             this.getWithdrawableAmount() >= _amount,
@@ -187,7 +187,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @param vestingScheduleId the vesting schedule identifier
     */
     function revoke(bytes32 vestingScheduleId)
-        public
+        external
         onlyOwner
         onlyIfVestingScheduleNotRevoked(vestingScheduleId){
         VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
@@ -206,7 +206,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @param amount the amount to withdraw
     */
     function withdraw(uint256 amount)
-        public
+        external
         nonReentrant
         onlyOwner{
         require(this.getWithdrawableAmount() >= amount, "TokenVesting: not enough withdrawable funds");
@@ -256,7 +256,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @return the vested amount
     */
     function computeReleasableAmount(bytes32 vestingScheduleId)
-        public
+        external
         onlyIfVestingScheduleNotRevoked(vestingScheduleId)
         view
         returns(uint256){
@@ -300,7 +300,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
     * @dev Returns the last vesting schedule for a given holder address.
     */
     function getLastVestingScheduleForHolder(address holder)
-        public
+        external
         view
         returns(VestingSchedule memory){
         return vestingSchedules[computeVestingScheduleIdForAddressAndIndex(holder, holdersVestingCount[holder] - 1)];
