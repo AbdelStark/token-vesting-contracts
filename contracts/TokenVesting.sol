@@ -160,6 +160,7 @@ contract TokenVesting is Ownable, ReentrancyGuard{
         require(_duration > 0, "TokenVesting: duration must be > 0");
         require(_amount > 0, "TokenVesting: amount must be > 0");
         require(_slicePeriodSeconds >= 1, "TokenVesting: slicePeriodSeconds must be >= 1");
+        require(_duration >= _cliff, "TokenVesting: duration must be >= cliff");
         bytes32 vestingScheduleId = computeNextVestingScheduleIdForHolder(_beneficiary);
         uint256 cliff = _start.add(_cliff);
         vestingSchedules[vestingScheduleId] = VestingSchedule(
