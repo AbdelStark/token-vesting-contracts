@@ -8,3 +8,4 @@ cache
 data
 coverage*
 env
+package-lock.json
