@@ -163,7 +163,7 @@ describe("TokenVesting", function () {
       // check that anyone cannot revoke a vesting
       await expect(
         tokenVesting.connect(addr2).revoke(vestingScheduleId)
-      ).to.be.revertedWith(" Ownable: caller is not the owner");
+      ).to.be.revertedWith(" AccessControl: account ");
       await tokenVesting.revoke(vestingScheduleId);
 
       /*
