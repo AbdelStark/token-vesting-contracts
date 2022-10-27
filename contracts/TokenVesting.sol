@@ -64,6 +64,10 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
         require(token_ != address(0x0));
         _token = IERC20(token_);
         grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        grantRole(CREATOR_ROLE, msg.sender);
+        grantRole(REVOKER_ROLE, msg.sender);
+        grantRole(WITHDRAWER_ROLE, msg.sender);
+        grantRole(RELEASOR_ROLE, msg.sender);
     }
 
     receive() external payable {}
