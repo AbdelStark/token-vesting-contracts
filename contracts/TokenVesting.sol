@@ -61,8 +61,13 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @param token_ address of the ERC20 token contract
      */
     constructor(address token_) {
+        // Check that the token address is not 0x0.
         require(token_ != address(0x0));
+        // Set the token address.
         _token = IERC20(token_);
+        // Set the deployer as the default admin.
+        // By default, the deployer has all the administrative roles.
+        // This can later be changed with the `renounceRole` and `grantRole` functions.
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(CREATOR_ROLE, msg.sender);
         _setupRole(REVOKER_ROLE, msg.sender);
@@ -70,67 +75,16 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
         _setupRole(RELEASOR_ROLE, msg.sender);
     }
 
+    /**
+     * @dev This function is called for plain Ether transfers, i.e. for every call with empty calldata.
+     */
     receive() external payable {}
 
+    /**
+     * @dev Fallback function is executed if none of the other functions match the function
+     * identifier or no data was provided with the function call.
+     */
     fallback() external payable {}
-
-    /**
-     * @dev Returns the number of vesting schedules associated to a beneficiary.
-     * @return the number of vesting schedules
-     */
-    function getVestingSchedulesCountByBeneficiary(address _beneficiary)
-        external
-        view
-        returns (uint256)
-    {
-        return holdersVestingCount[_beneficiary];
-    }
-
-    /**
-     * @dev Returns the vesting schedule id at the given index.
-     * @return the vesting id
-     */
-    function getVestingIdAtIndex(uint256 index)
-        external
-        view
-        returns (bytes32)
-    {
-        require(
-            index < getVestingSchedulesCount(),
-            "TokenVesting: index out of bounds"
-        );
-        return vestingSchedulesIds[index];
-    }
-
-    /**
-     * @notice Returns the vesting schedule information for a given holder and index.
-     * @return the vesting schedule structure information
-     */
-    function getVestingScheduleByAddressAndIndex(address holder, uint256 index)
-        external
-        view
-        returns (VestingSchedule memory)
-    {
-        return
-            getVestingSchedule(
-                computeVestingScheduleIdForAddressAndIndex(holder, index)
-            );
-    }
-
-    /**
-     * @notice Returns the total amount of vesting schedules.
-     * @return the total amount of vesting schedules
-     */
-    function getVestingSchedulesTotalAmount() external view returns (uint256) {
-        return vestingSchedulesTotalAmount;
-    }
-
-    /**
-     * @dev Returns the address of the ERC20 token managed by the vesting contract.
-     */
-    function getToken() external view returns (address) {
-        return address(_token);
-    }
 
     /**
      * @notice Creates a new vesting schedule for a beneficiary.
@@ -188,7 +142,9 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @notice Revokes the vesting schedule for given identifier.
      * @param vestingScheduleId the vesting schedule identifier
      */
-    function revoke(bytes32 vestingScheduleId)
+    function revoke(
+        bytes32 vestingScheduleId
+    )
         external
         onlyRole(REVOKER_ROLE)
         onlyIfVestingScheduleNotRevoked(vestingScheduleId)
@@ -214,11 +170,9 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @notice Withdraw the specified amount if possible.
      * @param amount the amount to withdraw
      */
-    function withdraw(uint256 amount)
-        external
-        nonReentrant
-        onlyRole(WITHDRAWER_ROLE)
-    {
+    function withdraw(
+        uint256 amount
+    ) external nonReentrant onlyRole(WITHDRAWER_ROLE) {
         require(
             getWithdrawableAmount() >= amount,
             "TokenVesting: not enough withdrawable funds"
@@ -234,11 +188,10 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @param vestingScheduleId the vesting schedule identifier
      * @param amount the amount to release
      */
-    function release(bytes32 vestingScheduleId, uint256 amount)
-        public
-        nonReentrant
-        onlyIfVestingScheduleNotRevoked(vestingScheduleId)
-    {
+    function release(
+        bytes32 vestingScheduleId,
+        uint256 amount
+    ) public nonReentrant onlyIfVestingScheduleNotRevoked(vestingScheduleId) {
         VestingSchedule storage vestingSchedule = vestingSchedules[
             vestingScheduleId
         ];
@@ -267,6 +220,59 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
     }
 
     /**
+     * @dev Returns the number of vesting schedules associated to a beneficiary.
+     * @return the number of vesting schedules
+     */
+    function getVestingSchedulesCountByBeneficiary(
+        address _beneficiary
+    ) external view returns (uint256) {
+        return holdersVestingCount[_beneficiary];
+    }
+
+    /**
+     * @dev Returns the vesting schedule id at the given index.
+     * @return the vesting id
+     */
+    function getVestingIdAtIndex(
+        uint256 index
+    ) external view returns (bytes32) {
+        require(
+            index < getVestingSchedulesCount(),
+            "TokenVesting: index out of bounds"
+        );
+        return vestingSchedulesIds[index];
+    }
+
+    /**
+     * @notice Returns the vesting schedule information for a given holder and index.
+     * @return the vesting schedule structure information
+     */
+    function getVestingScheduleByAddressAndIndex(
+        address holder,
+        uint256 index
+    ) external view returns (VestingSchedule memory) {
+        return
+            getVestingSchedule(
+                computeVestingScheduleIdForAddressAndIndex(holder, index)
+            );
+    }
+
+    /**
+     * @notice Returns the total amount of vesting schedules.
+     * @return the total amount of vesting schedules
+     */
+    function getVestingSchedulesTotalAmount() external view returns (uint256) {
+        return vestingSchedulesTotalAmount;
+    }
+
+    /**
+     * @dev Returns the address of the ERC20 token managed by the vesting contract.
+     */
+    function getToken() external view returns (address) {
+        return address(_token);
+    }
+
+    /**
      * @dev Returns the number of vesting schedules managed by this contract.
      * @return the number of vesting schedules
      */
@@ -278,7 +284,9 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @notice Computes the vested amount of tokens for the given vesting schedule identifier.
      * @return the vested amount
      */
-    function computeReleasableAmount(bytes32 vestingScheduleId)
+    function computeReleasableAmount(
+        bytes32 vestingScheduleId
+    )
         external
         view
         onlyIfVestingScheduleNotRevoked(vestingScheduleId)
@@ -294,11 +302,9 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @notice Returns the vesting schedule information for a given identifier.
      * @return the vesting schedule structure information
      */
-    function getVestingSchedule(bytes32 vestingScheduleId)
-        public
-        view
-        returns (VestingSchedule memory)
-    {
+    function getVestingSchedule(
+        bytes32 vestingScheduleId
+    ) public view returns (VestingSchedule memory) {
         return vestingSchedules[vestingScheduleId];
     }
 
@@ -313,11 +319,9 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
     /**
      * @dev Computes the next vesting schedule identifier for a given holder address.
      */
-    function computeNextVestingScheduleIdForHolder(address holder)
-        public
-        view
-        returns (bytes32)
-    {
+    function computeNextVestingScheduleIdForHolder(
+        address holder
+    ) public view returns (bytes32) {
         return
             computeVestingScheduleIdForAddressAndIndex(
                 holder,
@@ -328,11 +332,9 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
     /**
      * @dev Returns the last vesting schedule for a given holder address.
      */
-    function getLastVestingScheduleForHolder(address holder)
-        external
-        view
-        returns (VestingSchedule memory)
-    {
+    function getLastVestingScheduleForHolder(
+        address holder
+    ) external view returns (VestingSchedule memory) {
         return
             vestingSchedules[
                 computeVestingScheduleIdForAddressAndIndex(
@@ -356,30 +358,41 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @dev Computes the releasable amount of tokens for a vesting schedule.
      * @return the amount of releasable tokens
      */
-    function _computeReleasableAmount(VestingSchedule memory vestingSchedule)
-        internal
-        view
-        returns (uint256)
-    {
+    function _computeReleasableAmount(
+        VestingSchedule memory vestingSchedule
+    ) internal view returns (uint256) {
+        // Retrieve the current time.
         uint256 currentTime = getCurrentTime();
+        // If the current time is before the cliff, no tokens are releasable.
         if ((currentTime < vestingSchedule.cliff) || vestingSchedule.revoked) {
             return 0;
-        } else if (
+        }
+        // If the current time is after the vesting period, all tokens are releasable,
+        // minus the amount already released.
+        else if (
             currentTime >= vestingSchedule.start + vestingSchedule.duration
         ) {
             return vestingSchedule.amountTotal - vestingSchedule.released;
-        } else {
+        }
+        // Otherwise, some tokens are releasable.
+        else {
+            // Compute the number of full vesting periods that have elapsed.
             uint256 timeFromStart = currentTime - vestingSchedule.start;
             uint256 secondsPerSlice = vestingSchedule.slicePeriodSeconds;
             uint256 vestedSlicePeriods = timeFromStart / secondsPerSlice;
             uint256 vestedSeconds = vestedSlicePeriods * secondsPerSlice;
+            // Compute the amount of tokens that are vested.
             uint256 vestedAmount = (vestingSchedule.amountTotal *
                 vestedSeconds) / vestingSchedule.duration;
-            vestedAmount = vestedAmount - vestingSchedule.released;
-            return vestedAmount;
+            // Subtract the amount already released and return.
+            return vestedAmount - vestingSchedule.released;
         }
     }
 
+    /**
+     * @dev Returns the current time.
+     * @return the current timestamp in seconds.
+     */
     function getCurrentTime() internal view virtual returns (uint256) {
         return block.timestamp;
     }
