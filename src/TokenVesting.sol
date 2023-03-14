@@ -4,15 +4,14 @@ pragma solidity ^0.8.19;
 
 // OpenZeppelin dependencies
 import {ERC20} from "solmate/tokens/ERC20.sol";
+import {Owned} from "solmate/auth/Owned.sol";
 import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
-
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import {ReentrancyGuard} from "solmate/utils/ReentrancyGuard.sol";
 
 /**
  * @title TokenVesting
  */
-contract TokenVesting is AccessControl, ReentrancyGuard {
+contract TokenVesting is Owned, ReentrancyGuard {
     struct VestingSchedule {
         bool initialized;
         // beneficiary of tokens after they are released
@@ -38,11 +37,6 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
     // address of the ERC20 token
     ERC20 private immutable _token;
 
-    bytes32 public constant CREATOR_ROLE = keccak256("CREATOR_ROLE");
-    bytes32 public constant REVOKER_ROLE = keccak256("REVOKER_ROLE");
-    bytes32 public constant WITHDRAWER_ROLE = keccak256("WITHDRAWER_ROLE");
-    bytes32 public constant RELEASOR_ROLE = keccak256("RELEASOR_ROLE");
-
     bytes32[] private vestingSchedulesIds;
     mapping(bytes32 => VestingSchedule) private vestingSchedules;
     uint256 private vestingSchedulesTotalAmount;
@@ -61,19 +55,11 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @dev Creates a vesting contract.
      * @param token_ address of the ERC20 token contract
      */
-    constructor(address token_) {
+    constructor(address token_) Owned(msg.sender) {
         // Check that the token address is not 0x0.
         require(token_ != address(0x0));
         // Set the token address.
         _token = ERC20(token_);
-        // Set the deployer as the default admin.
-        // By default, the deployer has all the administrative roles.
-        // This can later be changed with the `renounceRole` and `grantRole` functions.
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(CREATOR_ROLE, msg.sender);
-        _setupRole(REVOKER_ROLE, msg.sender);
-        _setupRole(WITHDRAWER_ROLE, msg.sender);
-        _setupRole(RELEASOR_ROLE, msg.sender);
     }
 
     /**
@@ -105,7 +91,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
         uint256 _slicePeriodSeconds,
         bool _revocable,
         uint256 _amount
-    ) external onlyRole(CREATOR_ROLE) {
+    ) external onlyOwner {
         require(
             getWithdrawableAmount() >= _amount,
             "TokenVesting: cannot create vesting schedule because not sufficient tokens"
@@ -145,11 +131,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      */
     function revoke(
         bytes32 vestingScheduleId
-    )
-        external
-        onlyRole(REVOKER_ROLE)
-        onlyIfVestingScheduleNotRevoked(vestingScheduleId)
-    {
+    ) external onlyOwner onlyIfVestingScheduleNotRevoked(vestingScheduleId) {
         VestingSchedule storage vestingSchedule = vestingSchedules[
             vestingScheduleId
         ];
@@ -171,9 +153,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
      * @notice Withdraw the specified amount if possible.
      * @param amount the amount to withdraw
      */
-    function withdraw(
-        uint256 amount
-    ) external nonReentrant onlyRole(WITHDRAWER_ROLE) {
+    function withdraw(uint256 amount) external nonReentrant onlyOwner {
         require(
             getWithdrawableAmount() >= amount,
             "TokenVesting: not enough withdrawable funds"
@@ -181,7 +161,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
         /*
          * @dev Replaced owner() with msg.sender => address of WITHDRAWER_ROLE
          */
-        _token.safeTransfer(msg.sender, amount);
+        SafeTransferLib.safeTransfer(_token, msg.sender, amount);
     }
 
     /**
@@ -198,11 +178,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
         ];
         bool isBeneficiary = msg.sender == vestingSchedule.beneficiary;
 
-        /*
-         * @dev Replaced msg.sender == owner() with hasRole(keccak256("RELEASOR_ROLE"), msg.sender)
-         */
-
-        bool isReleasor = hasRole(keccak256("RELEASOR_ROLE"), msg.sender);
+        bool isReleasor = (msg.sender == owner);
         require(
             isBeneficiary || isReleasor,
             "TokenVesting: only beneficiary and owner can release vested tokens"
@@ -217,7 +193,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
             vestingSchedule.beneficiary
         );
         vestingSchedulesTotalAmount = vestingSchedulesTotalAmount - amount;
-        _token.safeTransfer(beneficiaryPayable, amount);
+        SafeTransferLib.safeTransfer(_token, beneficiaryPayable, amount);
     }
 
     /**

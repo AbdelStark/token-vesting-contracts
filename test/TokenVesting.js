@@ -163,7 +163,7 @@ describe("TokenVesting", function () {
       // check that anyone cannot revoke a vesting
       await expect(
         tokenVesting.connect(addr2).revoke(vestingScheduleId)
-      ).to.be.revertedWith(" AccessControl: account ");
+      ).to.be.revertedWith("UNAUTHORIZED");
       await tokenVesting.revoke(vestingScheduleId);
 
       /*
