@@ -9,3 +9,4 @@ data
 coverage*
 env
 out
+cache_hardhat
