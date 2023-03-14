@@ -1,4 +1,4 @@
 [profile.default]
-src = 'contracts'
+src = 'src'
 out = 'out'
-libs = ["node_modules", "lib"]
+libs = ['lib']
