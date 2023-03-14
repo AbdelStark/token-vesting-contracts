@@ -19,6 +19,15 @@ jobs:
         with:
           version: nightly
 
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          architecture: x64
+
+      - name: Install node dependencies
+        run: yarn --frozen-lockfile
+
       - name: Install deps
         run: forge install
 
