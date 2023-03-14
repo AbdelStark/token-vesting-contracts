@@ -14,11 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-
       - name: Setup node
         uses: actions/setup-node@v2
         with:
@@ -27,6 +22,10 @@ jobs:
 
       - name: Install node dependencies
         run: yarn --frozen-lockfile
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
 
       - name: Install deps
         run: forge install
