@@ -6,15 +6,25 @@ require("hardhat-docgen");
 require("hardhat-tracer");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
+require("hardhat-preprocessor");
+const fs = require("fs");
 
 const etherscanApiKey = getEtherscanApiKey();
+
+function getRemappings() {
+  return fs
+    .readFileSync("remappings.txt", "utf8")
+    .split("\n")
+    .filter(Boolean) // remove empty lines
+    .map((line) => line.trim().split("="));
+}
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
   solidity: {
-    version: "0.8.11",
+    version: "0.8.19",
     settings: {
       optimizer: {
         enabled: true,
@@ -25,8 +35,6 @@ module.exports = {
   networks: {
     mainnet: mainnetNetworkConfig(),
     goerli: goerliNetworkConfig(),
-    bscMainnet: bscMainnetNetworkConfig(),
-    bscTestnet: bscTestnetNetworkConfig(),
   },
   abiExporter: {
     path: "./build/abi",
@@ -75,42 +83,6 @@ function goerliNetworkConfig() {
 
   if (process.env.GOERLI_PRIVATE_KEY) {
     accountPrivateKey = `${process.env.GOERLI_PRIVATE_KEY}`;
-  }
-
-  return {
-    url: url,
-    accounts: [accountPrivateKey],
-  };
-}
-
-function bscMainnetNetworkConfig() {
-  let url = "https://data-seed-prebsc-1-s1.binance.org:8545/";
-  let accountPrivateKey =
-    "0x0000000000000000000000000000000000000000000000000000000000000000";
-  if (process.env.BSC_MAINNET_ENDPOINT) {
-    url = `${process.env.BSC_MAINNET_ENDPOINT}`;
-  }
-
-  if (process.env.BSC_MAINNET_PRIVATE_KEY) {
-    accountPrivateKey = `${process.env.BSC_MAINNET_PRIVATE_KEY}`;
-  }
-
-  return {
-    url: url,
-    accounts: [accountPrivateKey],
-  };
-}
-
-function bscTestnetNetworkConfig() {
-  let url = "https://data-seed-prebsc-1-s1.binance.org:8545/";
-  let accountPrivateKey =
-    "0x0000000000000000000000000000000000000000000000000000000000000000";
-  if (process.env.BSC_TESTNET_ENDPOINT) {
-    url = `${process.env.BSC_TESTNET_ENDPOINT}`;
-  }
-
-  if (process.env.BSC_TESTNET_PRIVATE_KEY) {
-    accountPrivateKey = `${process.env.BSC_TESTNET_PRIVATE_KEY}`;
   }
 
   return {

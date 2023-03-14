@@ -1,6 +1,6 @@
 {
-  "name": "token-vesting-contracts",
-  "version": "0.0.1",
+  "name": "erc20-token-vesting",
+  "version": "1.0.0",
   "description": "ERC20 Token Vesting Smart Contracts",
   "main": "index.js",
   "scripts": {
@@ -11,15 +11,11 @@
     "flatten": "npx hardhat flatten",
     "check:format": "solhint contracts/*.sol --fix",
     "deploy:mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
-    "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli",
-    "deploy:bsc:mainnet": "npx hardhat run scripts/deploy.js --network bscMainnet",
-    "deploy:bsc:testnet": "npx hardhat run scripts/deploy.js --network bscTestnet",
-    "tools:surya:graph": "surya graph ./contracts/**/*.sol | dot -Tpng > build/TokenVesting.png",
-    "tools:surya:report": "surya mdreport build/docs/surya-report.md contracts/TokenVesting.sol"
+    "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli"
   },
   "files": [
     "build/abi",
-    "contracts"
+    "src"
   ],
   "repository": {
     "type": "git",
@@ -40,6 +36,7 @@
   "homepage": "https://github.com/abdelhamidbakhta/token-vesting-contracts#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.1.0",
+    "hardhat-preprocessor": "^0.1.5",
     "prettier": "^2.3.0",
     "solc": "npm:solc@^0.8.4",
     "solidity-coverage": "^0.7.16",
