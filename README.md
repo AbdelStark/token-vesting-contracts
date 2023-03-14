@@ -10,19 +10,43 @@
 On-Chain vesting scheme enabled by smart contracts.
 
 `TokenVesting` contract can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period.
-Optionally revocable by the owner.
+The vesting schedules are optionally revocable by the owner.
 
 ## 🎭🧑‍💻 Security audits
 
 - [Security audit](https://github.com/abdelhamidbakhta/token-vesting-contracts/blob/main/audits/hacken_audit_report.pdf) from [Hacken](https://hacken.io)
 
-### 📦 Installation
+This repository is compatible with both Forge and Hardhat.
+You can find the specific instructions for each tool below.
+
+### Forge
+
+#### 📦 Installation
+
+```console
+forge install
+```
+
+#### ⛏️ Compile
+
+```console
+forge build
+```
+
+#### 🌡️ Testing
+
+```console
+$ forge test
+```
+
+### Hardhat
+#### 📦 Installation
 
 ```console
 $ yarn
 ```
 
-### ⛏️ Compile
+#### ⛏️ Compile
 
 ```console
 $ yarn compile
@@ -31,19 +55,19 @@ $ yarn compile
 This task will compile all smart contracts in the `contracts` directory.
 ABI files will be automatically exported in `build/abi` directory.
 
-### 📚 Documentation
+#### 📚 Documentation
 
 Documentation is auto-generated after each build in `docs` directory.
 
 The generated output is a static website containing smart contract documentation.
 
-### 🌡️ Testing
+#### 🌡️ Testing
 
 ```console
 $ yarn test
 ```
 
-### 📊 Code coverage
+#### 📊 Code coverage
 
 ```console
 $ yarn coverage
@@ -51,13 +75,13 @@ $ yarn coverage
 
 The report will be printed in the console and a static website containing full report will be generated in `coverage` directory.
 
-### ✨ Code style
+#### ✨ Code style
 
 ```console
 $ yarn prettier
 ```
 
-### 🐱‍💻 Verify & Publish contract source code
+#### 🐱‍💻 Verify & Publish contract source code
 
 ```console
 $ npx hardhat  verify --network mainnet $CONTRACT_ADDRESS $CONSTRUCTOR_ARGUMENTS
