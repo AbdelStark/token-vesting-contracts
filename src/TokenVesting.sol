@@ -3,8 +3,9 @@
 pragma solidity ^0.8.19;
 
 // OpenZeppelin dependencies
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ERC20} from "solmate/tokens/ERC20.sol";
+import {SafeTransferLib} from "solmate/utils/SafeTransferLib.sol";
+
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
@@ -12,7 +13,6 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * @title TokenVesting
  */
 contract TokenVesting is AccessControl, ReentrancyGuard {
-    using SafeERC20 for IERC20;
     struct VestingSchedule {
         bool initialized;
         // beneficiary of tokens after they are released
@@ -36,7 +36,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
     }
 
     // address of the ERC20 token
-    IERC20 private immutable _token;
+    ERC20 private immutable _token;
 
     bytes32 public constant CREATOR_ROLE = keccak256("CREATOR_ROLE");
     bytes32 public constant REVOKER_ROLE = keccak256("REVOKER_ROLE");
@@ -65,7 +65,7 @@ contract TokenVesting is AccessControl, ReentrancyGuard {
         // Check that the token address is not 0x0.
         require(token_ != address(0x0));
         // Set the token address.
-        _token = IERC20(token_);
+        _token = ERC20(token_);
         // Set the deployer as the default admin.
         // By default, the deployer has all the administrative roles.
         // This can later be changed with the `renounceRole` and `grantRole` functions.
