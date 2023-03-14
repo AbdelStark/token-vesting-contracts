@@ -5046,6 +5046,11 @@ emojis-list@^3.0.0:
   resolved "https://registry.npmjs.org/emojis-list/-/emojis-list-3.0.0.tgz"
   integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
 
+encode-utf8@^1.0.2:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/encode-utf8/-/encode-utf8-1.0.3.tgz#f30fdd31da07fb596f281beb2f6b027851994cda"
+  integrity sha512-ucAnuBEhUK4boH2HjVYG5Q2mQyPorvv0u/ocS+zhdw0S8AlHYY+GOFhP1Gio5z4icpP2ivFSvhtFjQi8+T9ppw==
+
 encodeurl@~1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/encodeurl/-/encodeurl-1.0.2.tgz"
@@ -5636,7 +5641,6 @@ ethereumjs-abi@0.6.8, ethereumjs-abi@^0.6.8:
 
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
-  uid ee3994657fa7a427238e6ba92a84d0b529bbcde0
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
   dependencies:
     bn.js "^4.11.8"
@@ -6268,6 +6272,13 @@ flow-stoplight@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/flow-stoplight/-/flow-stoplight-1.0.0.tgz"
   integrity sha1-SiksW8/4s5+mzAyxqFPYbyfu/3s=
+
+fmix@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/fmix/-/fmix-0.1.0.tgz#c7bbf124dec42c9d191cfb947d0a9778dd986c0c"
+  integrity sha512-Y6hyofImk9JdzU8k5INtTXX1cu8LDlePWDFU5sftm9H+zKCr5SGrVjdhkvsim646cw5zD0nADj8oHyXMZmCZ9w==
+  dependencies:
+    imul "^1.0.0"
 
 follow-redirects@^1.12.1:
   version "1.14.1"
@@ -6901,6 +6912,13 @@ hardhat-gas-reporter@^1.0.4:
     eth-gas-reporter "^0.2.20"
     sha1 "^1.1.1"
 
+hardhat-preprocessor@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/hardhat-preprocessor/-/hardhat-preprocessor-0.1.5.tgz#75b22641fd6a680739c995d03bd5f7868eb72144"
+  integrity sha512-j8m44mmPxpxAAd0G8fPHRHOas/INZdzptSur0TNJvMEGcFdLDhbHHxBcqZVQ/bmiW42q4gC60AP4CXn9EF018g==
+  dependencies:
+    murmur-128 "^0.2.1"
+
 hardhat-tracer@^1.0.0-alpha.6:
   version "1.0.0-alpha.6"
   resolved "https://registry.npmjs.org/hardhat-tracer/-/hardhat-tracer-1.0.0-alpha.6.tgz"
@@ -7330,6 +7348,11 @@ import-fresh@^3.0.0:
   dependencies:
     parent-module "^1.0.0"
     resolve-from "^4.0.0"
+
+imul@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/imul/-/imul-1.0.1.tgz#9d5867161e8b3de96c2c38d5dc7cb102f35e2ac9"
+  integrity sha512-WFAgfwPLAjU66EKt6vRdTlKj4nAgIDQzh29JonLa4Bqtl6D8JrIMvWjCnx7xEjVNmP3U0fM5o8ZObk7d0f62bA==
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -9103,6 +9126,15 @@ multihashes@^0.4.15, multihashes@~0.4.15:
     buffer "^5.5.0"
     multibase "^0.7.0"
     varint "^5.0.0"
+
+murmur-128@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/murmur-128/-/murmur-128-0.2.1.tgz#a9f6568781d2350ecb1bf80c14968cadbeaa4b4d"
+  integrity sha512-WseEgiRkI6aMFBbj8Cg9yBj/y+OdipwVC7zUo3W2W1JAJITwouUOtpqsmGSg67EQmwwSyod7hsVsWY5LsrfQVg==
+  dependencies:
+    encode-utf8 "^1.0.2"
+    fmix "^0.1.0"
+    imul "^1.0.0"
 
 mute-stream@0.0.7:
   version "0.0.7"
