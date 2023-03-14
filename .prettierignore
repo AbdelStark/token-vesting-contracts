@@ -7,3 +7,5 @@ artifacts
 cache
 docs
 env
+out
+lib
