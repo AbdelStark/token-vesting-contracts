@@ -59,6 +59,6 @@
     "hardhat-abi-exporter": "^2.2.1",
     "hardhat-docgen": "^1.1.1",
     "hardhat-gas-reporter": "^1.0.4",
-    "hardhat-tracer": "^1.0.0-alpha.6"
+    "hardhat-tracer": "^2.2.2"
   }
 }
