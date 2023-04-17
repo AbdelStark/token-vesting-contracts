@@ -1281,9 +1281,9 @@
     wrap-ansi "^4.0.0"
 
 "@openzeppelin/contracts@^4.1.0":
-  version "4.8.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.2.tgz#d815ade0027b50beb9bcca67143c6bcc3e3923d6"
-  integrity sha512-kEUOgPQszC0fSYWpbh2kT94ltOJwj1qfT2DWo+zVttmGmf97JZ99LspePNaeeaLhCImaHVeBbjaQFZQn7+Zc5g==
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.3.tgz#cbef3146bfc570849405f59cba18235da95a252a"
+  integrity sha512-bQHV8R9Me8IaJoJ2vPG4rXcL7seB7YVuskr4f+f5RyOStSZetwzkWtoqDMl5erkBJy0lDRUnIR2WIkPiC0GJlg==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
