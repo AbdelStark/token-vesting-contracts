@@ -17,6 +17,7 @@ The vesting schedules are optionally revocable by the owner.
 - [Security audit](https://github.com/abdelhamidbakhta/token-vesting-contracts/blob/main/audits/hacken_audit_report.pdf) from [Hacken](https://hacken.io)
 
 This repository is compatible with both Forge and Hardhat.
+Forge needs to be ran (install and build) before Hardhat is used in order to load dependency contracts.
 You can find the specific instructions for each tool below.
 
 ### Forge
@@ -62,6 +63,8 @@ Documentation is auto-generated after each build in `docs` directory.
 The generated output is a static website containing smart contract documentation.
 
 #### 🌡️ Testing
+
+Note: make sure to have ran forge build and compile before you run tests.
 
 ```console
 $ yarn test
