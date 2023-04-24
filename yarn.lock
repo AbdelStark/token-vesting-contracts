@@ -11816,11 +11816,11 @@ supports-color@^7.1.0:
     has-flag "^4.0.0"
 
 surya@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.npmjs.org/surya/-/surya-0.4.2.tgz"
-  integrity sha512-oEHDC8SS/soZ5Mw91n4bwwwjk0cNE7NwsWsJZdKXv73JEtxpYSLPz8Jz4JpzX/TaBw3/V1fZWx/ewPenyX+V2Q==
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/surya/-/surya-0.4.6.tgz#295a426eff219720d9b7963e04a50206288c321b"
+  integrity sha512-zaTYkRbms26cuOWu5jon5l4OsToHX7ZEflqTozXgq/XxUL3VY+tEnxT9Te2WVsA/sYgZPwcH92yQZJgljsss4g==
   dependencies:
-    "@solidity-parser/parser" "^0.11.0"
+    "@solidity-parser/parser" "^0.14.1"
     c3-linearization "^0.3.0"
     colors "^1.4.0"
     graphviz "0.0.9"
