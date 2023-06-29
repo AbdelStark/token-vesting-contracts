@@ -16,9 +16,9 @@ contract TokenVesting is Owned, ReentrancyGuard {
         bool initialized;
         // beneficiary of tokens after they are released
         address beneficiary;
-        // cliff period in seconds
+        // cliff time of the vesting start in seconds since the UNIX epoch
         uint256 cliff;
-        // start time of the vesting period
+        // start time of the vesting period in seconds since the UNIX epoch
         uint256 start;
         // duration of the vesting period in seconds
         uint256 duration;
