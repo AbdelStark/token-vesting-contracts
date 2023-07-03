@@ -13,7 +13,6 @@ import {ReentrancyGuard} from "solmate/utils/ReentrancyGuard.sol";
  */
 contract TokenVesting is Owned, ReentrancyGuard {
     struct VestingSchedule {
-        bool initialized;
         // beneficiary of tokens after they are released
         address beneficiary;
         // cliff time of the vesting start in seconds since the UNIX epoch
@@ -46,7 +45,6 @@ contract TokenVesting is Owned, ReentrancyGuard {
      * @dev Reverts if the vesting schedule does not exist or has been revoked.
      */
     modifier onlyIfVestingScheduleNotRevoked(bytes32 vestingScheduleId) {
-        require(vestingSchedules[vestingScheduleId].initialized);
         require(!vestingSchedules[vestingScheduleId].revoked);
         _;
     }
@@ -108,7 +106,6 @@ contract TokenVesting is Owned, ReentrancyGuard {
         );
         uint256 cliff = _start + _cliff;
         vestingSchedules[vestingScheduleId] = VestingSchedule(
-            true,
             _beneficiary,
             cliff,
             _start,
