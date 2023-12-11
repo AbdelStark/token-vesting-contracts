@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/abdelhamidbakhta/token-vesting-contracts#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^4.1.0",
+    "@openzeppelin/contracts": "^5.0.1",
     "prettier": "^2.3.0",
     "solc": "npm:solc@^0.8.4",
     "solidity-coverage": "^0.7.16",
