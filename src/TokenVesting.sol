@@ -344,14 +344,14 @@ contract TokenVesting is Owned, ReentrancyGuard {
         // If the current time is after the vesting period, all tokens are releasable,
         // minus the amount already released.
         else if (
-            currentTime >= vestingSchedule.start + vestingSchedule.duration
+            currentTime >= vestingSchedule.cliff + vestingSchedule.duration
         ) {
             return vestingSchedule.amountTotal - vestingSchedule.released;
         }
         // Otherwise, some tokens are releasable.
         else {
             // Compute the number of full vesting periods that have elapsed.
-            uint256 timeFromStart = currentTime - vestingSchedule.start;
+            uint256 timeFromStart = currentTime - vestingSchedule.cliff;
             uint256 secondsPerSlice = vestingSchedule.slicePeriodSeconds;
             uint256 vestedSlicePeriods = timeFromStart / secondsPerSlice;
             uint256 vestedSeconds = vestedSlicePeriods * secondsPerSlice;

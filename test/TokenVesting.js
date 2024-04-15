@@ -297,5 +297,144 @@ describe("TokenVesting", function () {
         )
       ).to.be.revertedWith("TokenVesting: amount must be > 0");
     });
+
+    it("Should not release tokens before cliff", async function () {
+      // deploy vesting contract
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+
+      // send tokens to vesting contract
+      await expect(testToken.transfer(tokenVesting.address, 1000))
+        .to.emit(testToken, "Transfer")
+        .withArgs(owner.address, tokenVesting.address, 1000);
+
+      const baseTime = 1622551248;
+      const beneficiary = addr1;
+      const startTime = baseTime;
+      const cliff = 100; // Set a non-zero cliff duration
+      const duration = 1000;
+      const slicePeriodSeconds = 1;
+      const revokable = true;
+      const amount = 100;
+
+      // create new vesting schedule
+      await tokenVesting.createVestingSchedule(
+        beneficiary.address,
+        startTime,
+        cliff,
+        duration,
+        slicePeriodSeconds,
+        revokable,
+        amount
+      );
+
+      // compute vesting schedule id
+      const vestingScheduleId =
+        await tokenVesting.computeVestingScheduleIdForAddressAndIndex(
+          beneficiary.address,
+          0
+        );
+
+      // check that vested amount is 0 before cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to just before the cliff
+      const justBeforeCliff = baseTime + cliff - 1;
+      await tokenVesting.setCurrentTime(justBeforeCliff);
+
+      // check that vested amount is still 0 just before the cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to the cliff
+      await tokenVesting.setCurrentTime(baseTime + cliff + 200);
+
+      // check that vested amount is greater than 0 at the cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(20);
+    });
+
+    it("Should vest tokens correctly with a 6-months cliff and 12-months duration", async function () {
+      // deploy vesting contract
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+
+      // send tokens to vesting contract
+      await expect(testToken.transfer(tokenVesting.address, 1000))
+        .to.emit(testToken, "Transfer")
+        .withArgs(owner.address, tokenVesting.address, 1000);
+
+      const baseTime = 1622551248; // June 1, 2021
+      const beneficiary = addr1;
+      const startTime = baseTime;
+      const cliff = 15552000; // 6 months in seconds
+      const duration = 31536000; // 12 months in seconds
+      const slicePeriodSeconds = 2592000; // 1 month in seconds
+      const revokable = true;
+      const amount = 1000;
+
+      // create new vesting schedule
+      await tokenVesting.createVestingSchedule(
+        beneficiary.address,
+        startTime,
+        cliff,
+        duration,
+        slicePeriodSeconds,
+        revokable,
+        amount
+      );
+
+      // compute vesting schedule id
+      const vestingScheduleId =
+        await tokenVesting.computeVestingScheduleIdForAddressAndIndex(
+          beneficiary.address,
+          0
+        );
+
+      // check that vested amount is 0 before cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to just before the cliff (5 months)
+      const justBeforeCliff = baseTime + cliff - 2592000;
+      await tokenVesting.setCurrentTime(justBeforeCliff);
+
+      // check that vested amount is still 0 just before the cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to the cliff (6 months)
+      await tokenVesting.setCurrentTime(baseTime + cliff);
+
+      // check that vested amount is equal to the total amount at the cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to halfway through the vesting period (12 months)
+      const halfwayThrough = baseTime + cliff + duration / 2;
+      await tokenVesting.setCurrentTime(halfwayThrough);
+
+      // check that vested amount is greater than 0
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.gt(400);
+
+      // set time to the end of the vesting period (18 months)
+      const endOfVesting = baseTime + cliff + duration;
+      await tokenVesting.setCurrentTime(endOfVesting);
+
+      // check that vested amount is equal to the total amount
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(amount);
+    });
+
   });
 });
