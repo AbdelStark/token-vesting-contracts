@@ -437,4 +437,56 @@ describe("TokenVesting", function () {
     });
 
   });
+
+  describe("Withdraw", function () {
+    it("Should not allow non-owners to withdraw tokens", async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      await testToken.transfer(tokenVesting.address, 1000);
+
+      // Owner should be able to withdraw tokens
+      await expect(tokenVesting.withdraw(500))
+        .to.emit(testToken, "Transfer")
+        .withArgs(tokenVesting.address, owner.address, 500);
+
+      // Non-owner should not be able to withdraw tokens
+      await expect(
+        tokenVesting.connect(addr1).withdraw(100)
+      ).to.be.revertedWith("UNAUTHORIZED");
+
+      await expect(
+        tokenVesting.connect(addr2).withdraw(200)
+      ).to.be.revertedWith("UNAUTHORIZED");
+    });
+
+    it("Should not allow withdrawing more than the available withdrawable amount", async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      await testToken.transfer(tokenVesting.address, 1000);
+
+      await expect(
+        tokenVesting.withdraw(1500)
+      ).to.be.revertedWith("TokenVesting: not enough withdrawable funds");
+    });
+
+    it("Should emit a Transfer event when withdrawing tokens", async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      await testToken.transfer(tokenVesting.address, 1000);
+
+      await expect(tokenVesting.withdraw(500))
+        .to.emit(testToken, "Transfer")
+        .withArgs(tokenVesting.address, owner.address, 500);
+    });
+
+    it("Should update the withdrawable amount after withdrawing tokens", async function () {
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+      await testToken.transfer(tokenVesting.address, 1000);
+
+      await tokenVesting.withdraw(300);
+      expect(await tokenVesting.getWithdrawableAmount()).to.equal(700);
+    });
+
+  });
 });
