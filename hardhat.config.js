@@ -7,6 +7,7 @@ require("hardhat-tracer");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
 require("hardhat-preprocessor");
+require('dotenv').config()
 const fs = require("fs");
 
 const etherscanApiKey = getEtherscanApiKey();
@@ -52,8 +53,9 @@ module.exports = {
     }),
   },
   networks: {
-    mainnet: mainnetNetworkConfig(),
-    goerli: goerliNetworkConfig(),
+    // mainnet: mainnetNetworkConfig(),
+    // goerli: goerliNetworkConfig(),
+    sepolia: sepoliaNetworkConfig()
   },
   abiExporter: {
     path: "./build/abi",
@@ -104,6 +106,23 @@ function goerliNetworkConfig() {
     accountPrivateKey = `${process.env.GOERLI_PRIVATE_KEY}`;
   }
 
+  return {
+    url: url,
+    accounts: [accountPrivateKey],
+  };
+}
+function sepoliaNetworkConfig() {
+  // console.log("Hello");
+  let url = "https://goerli.infura.io/v3/";
+  let accountPrivateKey =
+    "0x0000000000000000000000000000000000000000000000000000000000000000";
+  if (process.env.SEPOLIA_ENDPOINT) {
+    url = `${process.env.SEPOLIA_ENDPOINT}`;
+  }
+
+  if (process.env.SEPOLIA_PRIVATE_KEY) {
+    accountPrivateKey = `${process.env.SEPOLIA_PRIVATE_KEY}`;
+  }
   return {
     url: url,
     accounts: [accountPrivateKey],

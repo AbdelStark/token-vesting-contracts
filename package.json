@@ -11,7 +11,8 @@
     "flatten": "npx hardhat flatten",
     "check:format": "solhint contracts/*.sol --fix",
     "deploy:mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
-    "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli"
+    "deploy:goerli": "npx hardhat run scripts/deploy.js --network goerli",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia"
   },
   "files": [
     "build/abi",
@@ -36,6 +37,7 @@
   "homepage": "https://github.com/abdelhamidbakhta/token-vesting-contracts#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
+    "dotenv": "^16.4.5",
     "prettier": "^2.3.0",
     "solc": "npm:solc@^0.8.4",
     "solidity-coverage": "^0.7.16",
@@ -51,7 +53,6 @@
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@nomiclabs/hardhat-solhint": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "hardhat-preprocessor": "^0.1.5",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.3.0",
     "ethers": "^5.2.0",
@@ -59,6 +60,7 @@
     "hardhat-abi-exporter": "^2.2.1",
     "hardhat-docgen": "^1.1.1",
     "hardhat-gas-reporter": "^1.0.4",
+    "hardhat-preprocessor": "^0.1.5",
     "hardhat-tracer": "^1.0.0-alpha.6"
   }
 }
