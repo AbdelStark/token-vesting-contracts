@@ -7,7 +7,7 @@ require("hardhat-tracer");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
 require("hardhat-preprocessor");
-require('dotenv').config()
+require("dotenv").config();
 const fs = require("fs");
 
 const etherscanApiKey = getEtherscanApiKey();
@@ -55,7 +55,7 @@ module.exports = {
   networks: {
     // mainnet: mainnetNetworkConfig(),
     // goerli: goerliNetworkConfig(),
-    sepolia: sepoliaNetworkConfig()
+    sepolia: sepoliaNetworkConfig(),
   },
   abiExporter: {
     path: "./build/abi",

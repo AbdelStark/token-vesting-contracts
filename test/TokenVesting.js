@@ -429,6 +429,16 @@ describe("TokenVesting", function () {
         await tokenVesting.computeReleasableAmount(vestingScheduleId)
       ).to.be.equal(0);
 
+      // set time to the cliff + one second
+      let JustAfterCliffPeriod = startTime + cliff + 1; // Current-TS
+      await tokenVesting.setCurrentTime(JustAfterCliffPeriod);
+      let expectedReleasableAmountAfterCliff = Math.round(
+        ((cliff + 1) * amount) / duration
+      );
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(expectedReleasableAmountAfterCliff);
+
       // set time to the cliff + one month
       let FourMonthAfterVesting = startTime + cliff + ONE_MONTHS_IN_SEC; // Current-TS
       await tokenVesting.setCurrentTime(FourMonthAfterVesting);
