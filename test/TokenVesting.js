@@ -350,12 +350,94 @@ describe("TokenVesting", function () {
       ).to.be.equal(0);
 
       // set time to the cliff
-      await tokenVesting.setCurrentTime(baseTime + cliff + 200);
-
+      let additionalTS = 200; // extra time after cliff TS milestone
+      await tokenVesting.setCurrentTime(baseTime + cliff + additionalTS);
+      // Here cliff + additionalTS because startTime == baseTime
+      let expectedReleasableAmount =
+        ((cliff + additionalTS) * amount) / duration;
       // check that vested amount is greater than 0 at the cliff
       expect(
         await tokenVesting.computeReleasableAmount(vestingScheduleId)
-      ).to.be.equal(20);
+      ).to.be.equal(expectedReleasableAmount);
+    });
+
+    /*
+    1000 tokens are allocated for 10 months duration with 3 months cliff period. 
+    For first 3 months, vested / claimable amount should be 0. 
+    On the first day of 4th month, claimable amount should be 300.
+    */
+    it("Should test for custom scenario", async function () {
+      // deploy vesting contract
+      const tokenVesting = await TokenVesting.deploy(testToken.address);
+      await tokenVesting.deployed();
+
+      // send tokens to vesting contract
+      const amountToVest = 1000;
+      await expect(testToken.transfer(tokenVesting.address, amountToVest))
+        .to.emit(testToken, "Transfer")
+        .withArgs(owner.address, tokenVesting.address, amountToVest);
+      const TEN_MONTHS_IN_SEC = 26_298_240;
+      const THREE_MONTHS_IN_SEC = 7_889_472;
+      const ONE_MONTHS_IN_SEC = 2_629_824;
+      const baseTime = 1622551248;
+      const beneficiary = addr1;
+      const startTime = baseTime;
+      const cliff = THREE_MONTHS_IN_SEC;
+      const duration = TEN_MONTHS_IN_SEC;
+      const slicePeriodSeconds = 1;
+      const revokable = true;
+      const amount = 1000;
+
+      // create new vesting schedule
+      await tokenVesting.createVestingSchedule(
+        beneficiary.address,
+        startTime,
+        cliff,
+        duration,
+        slicePeriodSeconds,
+        revokable,
+        amount
+      );
+
+      // compute vesting schedule id
+      const vestingScheduleId =
+        await tokenVesting.computeVestingScheduleIdForAddressAndIndex(
+          beneficiary.address,
+          0
+        );
+
+      // check that vested amount is 0 before cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to just before the cliff
+      const justBeforeCliff = startTime + cliff - 1;
+      await tokenVesting.setCurrentTime(justBeforeCliff);
+
+      // check that vested amount is still 0 just before the cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to cliff
+      const AtCliff = startTime + cliff;
+      await tokenVesting.setCurrentTime(AtCliff);
+
+      // check that vested amount is still 0 at cliff
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(0);
+
+      // set time to the cliff + one month
+      let FourMonthAfterVesting = startTime + cliff + ONE_MONTHS_IN_SEC; // Current-TS
+      await tokenVesting.setCurrentTime(FourMonthAfterVesting);
+      // Here cliff + ONE_MONTHS_IN_SEC = 4 months
+      let expectedReleasableAmount =
+        ((cliff + ONE_MONTHS_IN_SEC) * amount) / duration;
+      expect(
+        await tokenVesting.computeReleasableAmount(vestingScheduleId)
+      ).to.be.equal(expectedReleasableAmount);
     });
 
     it("Should vest tokens correctly with a 6-months cliff and 12-months duration", async function () {
@@ -435,7 +517,6 @@ describe("TokenVesting", function () {
         await tokenVesting.computeReleasableAmount(vestingScheduleId)
       ).to.be.equal(amount);
     });
-
   });
 
   describe("Withdraw", function () {
@@ -464,9 +545,9 @@ describe("TokenVesting", function () {
       await tokenVesting.deployed();
       await testToken.transfer(tokenVesting.address, 1000);
 
-      await expect(
-        tokenVesting.withdraw(1500)
-      ).to.be.revertedWith("TokenVesting: not enough withdrawable funds");
+      await expect(tokenVesting.withdraw(1500)).to.be.revertedWith(
+        "TokenVesting: not enough withdrawable funds"
+      );
     });
 
     it("Should emit a Transfer event when withdrawing tokens", async function () {
@@ -487,6 +568,5 @@ describe("TokenVesting", function () {
       await tokenVesting.withdraw(300);
       expect(await tokenVesting.getWithdrawableAmount()).to.equal(700);
     });
-
   });
 });
