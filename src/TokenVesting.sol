@@ -94,6 +94,7 @@ contract TokenVesting is Owned, ReentrancyGuard {
             getWithdrawableAmount() >= _amount,
             "TokenVesting: cannot create vesting schedule because not sufficient tokens"
         );
+        require(_start >= getCurrentTime(), "TokenVesting: Invalid start time for schedule vesting");
         require(_duration > 0, "TokenVesting: duration must be > 0");
         require(_amount > 0, "TokenVesting: amount must be > 0");
         require(
@@ -116,10 +117,11 @@ contract TokenVesting is Owned, ReentrancyGuard {
             0,
             false
         );
-        vestingSchedulesTotalAmount = vestingSchedulesTotalAmount + _amount;
+        vestingSchedulesTotalAmount +=  _amount;
         vestingSchedulesIds.push(vestingScheduleId);
-        uint256 currentVestingCount = holdersVestingCount[_beneficiary];
-        holdersVestingCount[_beneficiary] = currentVestingCount + 1;
+        unchecked {
+        holdersVestingCount[_beneficiary]++;
+            }
     }
 
     /**
@@ -167,31 +169,31 @@ contract TokenVesting is Owned, ReentrancyGuard {
      * @param amount the amount to release
      */
     function release(
-        bytes32 vestingScheduleId,
-        uint256 amount
-    ) public nonReentrant onlyIfVestingScheduleNotRevoked(vestingScheduleId) {
-        VestingSchedule storage vestingSchedule = vestingSchedules[
-            vestingScheduleId
-        ];
-        bool isBeneficiary = msg.sender == vestingSchedule.beneficiary;
+    bytes32 vestingScheduleId,
+    uint256 amount
+) public nonReentrant onlyIfVestingScheduleNotRevoked(vestingScheduleId) {
+    VestingSchedule storage vestingSchedule = vestingSchedules[vestingScheduleId];
+    address beneficiary = vestingSchedule.beneficiary;
+    
+    require(
+        msg.sender == beneficiary || msg.sender == owner,
+        "TokenVesting: only beneficiary and owner can release vested tokens"
+    );
+    
+    uint256 vestedAmount = _computeReleasableAmount(vestingSchedule);
+    require(
+        vestedAmount >= amount,
+        "TokenVesting: cannot release tokens, not enough vested tokens"
+    );
 
-        bool isReleasor = (msg.sender == owner);
-        require(
-            isBeneficiary || isReleasor,
-            "TokenVesting: only beneficiary and owner can release vested tokens"
-        );
-        uint256 vestedAmount = _computeReleasableAmount(vestingSchedule);
-        require(
-            vestedAmount >= amount,
-            "TokenVesting: cannot release tokens, not enough vested tokens"
-        );
-        vestingSchedule.released = vestingSchedule.released + amount;
-        address payable beneficiaryPayable = payable(
-            vestingSchedule.beneficiary
-        );
-        vestingSchedulesTotalAmount = vestingSchedulesTotalAmount - amount;
-        SafeTransferLib.safeTransfer(_token, beneficiaryPayable, amount);
+    unchecked {
+        vestingSchedule.released += amount;
+        vestingSchedulesTotalAmount -= amount;
     }
+    
+    SafeTransferLib.safeTransfer(_token, payable(beneficiary), amount);
+}
+
 
     /**
      * @dev Returns the number of vesting schedules associated to a beneficiary.
@@ -337,21 +339,41 @@ contract TokenVesting is Owned, ReentrancyGuard {
     ) internal view returns (uint256) {
         // Retrieve the current time.
         uint256 currentTime = getCurrentTime();
-        // If the current time is before the cliff, no tokens are releasable.
-        if ((currentTime < vestingSchedule.cliff) || vestingSchedule.revoked) {
+        // If the current time is before or equals to the cliff, no tokens are releasable.
+        if ((currentTime <= vestingSchedule.cliff) || vestingSchedule.revoked) {
+            
+    /*                                       (block.timestamp)    
+               ------------------------------------------------------------------------------------
+                 |                  |                       |                             |            
+               Start-Time    **Curent Timestamp**         Cliff                    Vesting Duration end          
+            (vesting started)                                                         (vesting ended)
+     */
             return 0;
         }
         // If the current time is after the vesting period, all tokens are releasable,
         // minus the amount already released.
-        else if (
-            currentTime >= vestingSchedule.cliff + vestingSchedule.duration
+        else if ( 
+    /*                                           (block.timestamp)    
+               ------------------------------------------------------------------------------------
+                 |                    |                             |                          |
+               Start-Time            Cliff                    Vesting Duration end        **Curent Timestamp**
+            (vesting started)                                    (vesting ended)
+     */
+            currentTime > vestingSchedule.start + vestingSchedule.duration
         ) {
             return vestingSchedule.amountTotal - vestingSchedule.released;
         }
         // Otherwise, some tokens are releasable.
         else {
+
+    /*                                       (block.timestamp)    
+               ------------------------------------------------------------------------------------
+                 |                  |                       |                             |            
+               Start-Time         Cliff             **Curent Timestamp**          Vesting Duration end          
+            (vesting started)                                                         (vesting ended)
+     */
             // Compute the number of full vesting periods that have elapsed.
-            uint256 timeFromStart = currentTime - vestingSchedule.cliff;
+            uint256 timeFromStart = currentTime - vestingSchedule.start;
             uint256 secondsPerSlice = vestingSchedule.slicePeriodSeconds;
             uint256 vestedSlicePeriods = timeFromStart / secondsPerSlice;
             uint256 vestedSeconds = vestedSlicePeriods * secondsPerSlice;

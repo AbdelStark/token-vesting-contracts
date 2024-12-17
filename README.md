@@ -1,121 +1,29 @@
-[![Actions Status](https://github.com/abdelhamidbakhta/token-vesting-contracts/workflows/test/badge.svg)](https://github.com/abdelhamidbakhta/token-vesting-contracts/actions/workflows/test.yml)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![npm version](https://badge.fury.io/js/erc20-token-vesting.svg)](https://badge.fury.io/js/erc20-token-vesting)
-
 # Token Vesting Contracts
+---
+
+This project is a fork of the ERC20 token vesting contract from [AbdelStark's repository](https://github.com/AbdelStark/token-vesting-contracts/tree/main). The current implementation has been modified to make the cliff period inclusive of the vesting duration.
 
 ## Overview
 
-On-Chain vesting scheme enabled by smart contracts.
+In the modified implementation, tokens are not vested during the cliff period, making it inclusive of the vesting duration. For example, if 1000 tokens are allocated for a 10-month duration with a 3-month cliff period, the vested/claimable amount for the first 3 months will be 0. On the first day of the 4th month, the claimable amount should be 300 tokens.
 
-`TokenVesting` contract can release its token balance gradually like a typical vesting scheme, with a cliff and vesting period.
-The vesting schedules are optionally revocable by the owner.
+## Deployed Contracts
 
-## 🎭🧑‍💻 Security audits
+- **Token Address:** [0x480222Fd55597BB7EFc414a9C6d4E103820520Eb](https://sepolia.etherscan.io/address/0x480222Fd55597BB7EFc414a9C6d4E103820520Eb)
+- **TokenVesting Address:** [0xDFf34D3960804DA62734d095419fD19F65229b0C](https://sepolia.etherscan.io/address/0xDFf34D3960804DA62734d095419fD19F65229b0C)
+- **Deployer Address:** [0x14E9511285a10950f3c968Fa371F3b87182C9ef5](https://sepolia.etherscan.io/address/0x14E9511285a10950f3c968Fa371F3b87182C9ef5)
 
-- [Security audit](https://github.com/abdelhamidbakhta/token-vesting-contracts/blob/main/audits/hacken_audit_report.pdf) from [Hacken](https://hacken.io)
+## Modifications
 
-This repository is compatible with both Forge and Hardhat.
-Forge needs to be ran (install and build) before Hardhat is used in order to load dependency contracts.
-You can find the specific instructions for each tool below.
+1. **Cliff Period Inclusion:**
+   - The logic has been modified to include the cliff period within the vesting duration.
 
-### Forge
+2. **Example Scenario:**
+   - For a 1000 tokens allocation over a 10-month duration with a 3-month cliff period:
+     - The claimable amount is 0 for the first 3 months.
+     - On the first day of the 4th month, the claimable amount is 300 tokens.
 
-#### 📦 Installation
+## Testing
 
-```console
-forge install
-```
+A test case has been written to pass the scenario mentioned above.
 
-#### ⛏️ Compile
-
-```console
-forge build
-```
-
-#### 🌡️ Testing
-
-```console
-$ forge test
-```
-
-### Hardhat
-
-#### 📦 Installation
-
-```console
-$ yarn
-```
-
-#### ⛏️ Compile
-
-```console
-$ yarn compile
-```
-
-This task will compile all smart contracts in the `contracts` directory.
-ABI files will be automatically exported in `build/abi` directory.
-
-#### 📚 Documentation
-
-Documentation is auto-generated after each build in `docs` directory.
-
-The generated output is a static website containing smart contract documentation.
-
-#### 🌡️ Testing
-
-Note: make sure to have ran forge build and compile before you run tests.
-
-```console
-$ yarn test
-```
-
-#### 📊 Code coverage
-
-```console
-$ yarn coverage
-```
-
-The report will be printed in the console and a static website containing full report will be generated in `coverage` directory.
-
-#### ✨ Code style
-
-```console
-$ yarn prettier
-```
-
-#### 🐱‍💻 Verify & Publish contract source code
-
-```console
-$ npx hardhat  verify --network mainnet $CONTRACT_ADDRESS $CONSTRUCTOR_ARGUMENTS
-```
-
-## 📄 License
-
-**Token Vesting Contracts** is released under the [Apache-2.0](LICENSE).
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/abdelhamidbakhta"><img src="https://avatars.githubusercontent.com/u/45264458?v=4?s=100" width="100px;" alt="Abdel @ StarkWare "/><br /><sub><b>Abdel @ StarkWare </b></sub></a><br /><a href="https://github.com/abdelhamidbakhta/token-vesting-contracts/commits?author=abdelhamidbakhta" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vpavlin"><img src="https://avatars.githubusercontent.com/u/4759808?v=4?s=100" width="100px;" alt="Vaclav Pavlin"/><br /><sub><b>Vaclav Pavlin</b></sub></a><br /><a href="https://github.com/abdelhamidbakhta/token-vesting-contracts/commits?author=vpavlin" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/TheMightyYak1"><img src="https://avatars.githubusercontent.com/u/78634345?v=4?s=100" width="100px;" alt="Brendan Baker"/><br /><sub><b>Brendan Baker</b></sub></a><br /><a href="https://github.com/abdelhamidbakhta/token-vesting-contracts/commits?author=TheMightyYak1" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/owlen"><img src="https://avatars.githubusercontent.com/u/5638865?v=4?s=100" width="100px;" alt="Oren Gampel"/><br /><sub><b>Oren Gampel</b></sub></a><br /><a href="https://github.com/abdelhamidbakhta/token-vesting-contracts/commits?author=owlen" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
